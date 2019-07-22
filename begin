@@ -33,19 +33,25 @@ Ta có các lệnh sau:
 c, Add/delete virutal IP address vào interface NIC có sẵn
 -----Bí danh mạng (Network alias-es)
 Bí danh mạng (network alias) là 1 loại IP ảo, dựa trên NIC và IP gốc được cấp của NIC. có nhiệm vụ cùng IP gốc tải lên-xuống từ Net  NIC đó. Giả sử có 1 card NIC đang cắm là ens33 với địa chỉ IP hiện tại là 192.168.177.250/24. ta muốn tạo thêm 1 bí danh cho nó với địa chỉ là 192.168.177.251/24 cũng trên card NIC đó. Lệnh để cài đặt:
+
 ifconfig ens33:x 192.168.177.251 up (với x là số từ 0-n bắt đầu từ 0) 
 ifconfig -a (kiểm tra)
 ifconfig ens33:x down (gỡ bỏ)
+
 -----Giao thức mạng ảo (Virtual network interface)
 Cũng tương tự giống như bí danh mạng. Ví dụ cho y như trường hợp trên, ta cũng có thể sử dụng lệnh ip addr để add :
+
 ip addr add 192.168.177.251/24 dev ens33 (gán IP ảo 251 này cho ens33)
 ip addr del 192.168.177.251/24 dev ens33 (gỡ IP ảo 251 này khỏi ens33)
+
 Lưu ý. Khi muốn clear sạch sẽ các Virtual IP Address này, ta có thể sử dụng lệnh ip addr flush dev X (ví dụ X là ens33) hoặc service network restart để clear các setting của Virtual IP vì chúng có thuộc tính là IP tạm. chứ không phải IP gốc vì 1 NIC chỉ có 1 IP gốc. muốn set thêm IP permanent cho NIC đó thì ta có thể sửa trong /etc/network/interface. Chi tiết .
 --------------------------------------------------------------------------------------------------------
 d, Bảng định tuyến tĩnh (Static route board)
 Định tuyến mạng giúp ta có thể truy cập vào các network và interface khác với network và interface của máy đang sử dụng.
 Bảng định tuyến giúp ta biết muốn đi đến một mạng nào đó thì cần đi qua đâu, qua IP nào và qua NIC nào. câu lệnh liệt kê là route -n . Ví dụ lệnh để tạo 1 định tuyến có cấu trúc như sau:
+
 ip route add 172.16.1.0/22 via 192.168.177.10 dev ens33
+
 Giải thích:
 ip route add: là lệnh để tạo định tuyến
 172.16.1.0/22 : là mạng đích ta muốn kết nối. Cũng như là network 172.16.1.0 với mask 255.255.252.0 (prefix /22)
