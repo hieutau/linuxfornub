@@ -149,7 +149,7 @@ ntpd -gq (đợi 1 lát)
 systemctl start ntpd
 service ntpd start
 timedatectl set-ntp on
-			timedatectl
+timedatectl
 Sau đó kiểm tra lại trạng thái đồng bộ như trên, nếu vẫn không được thì restart bằng lệnh reboot.
 --------------------------------------------------------------------------------------------------------
 
