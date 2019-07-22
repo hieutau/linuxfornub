@@ -1,1 +1,345 @@
-a
+CentOS 7
+--------------------------------------------------------------------------------------------------------
+*Cấu hình Network 
+a, Cài đặt – setting mạng
+  Trước tiên để tiện cho việc kiểm tra IP sau khi setting thì nên cài tool network trước: đăng nhập su, nhập password của root rồi gõ lệnh sau (yêu cầu mạng đang ở DHCP/Automatic):
+      yum install net-tools -y
+Sau đó nhấn y để tải và cài. Sau khi cài đặt xong:
++tại dấu nhắc, gõ nmcli d để kiểm tra xem state của NIC/other NIC
+	+tại dấu nhắc, gõ nmtui
+	+vào Activate a connection, chọn network card/network name rồi đánh dấu active. Khi phần đó hiện dấu sao ở phía đầu network name đó tức là đã bật kết nối. Back để quay lại.
+	+Vào Edit a connection, chọn đúng networkname cần setting rồi nhấn Enter
+	+Tại mục Ethernet, chọn vào NICs cần chọn, khi vào đó sẽ có các mục cần lưu ý:
+		-Profile name
+		-IPv4 Configuration (Automatic – tự động; Manual – tĩnh)
+		-đánh X vào Automatically connect
+Giả dụ Network hiện tại CentOS đang tham gia là 192.168.177.0/22, ta sẽ set cho NIC đang sử dụng là:
+		-IP address: 192.168.177.253/22
+		-Default Gateway: 192.168.177.1
+		-Primary DNS: 8.8.8.8
+Sau khi setting xong, ta gõ service network restart , sau đó nhập password của root vào để tiến hành reset mạng.
+--------------------------------------------------------------------------------------------------------
+b, Kiểm tra/truy xuất thông tin NIC
+ethtool là một công cụ giúp truy xuất, tìm kiếm thông tin các card NIC và các trình driver NIC đang hiện có trên máy cài đặt Linux (cụ thể ở đây là CentOS)
+Ta có các lệnh sau:
+	nmcli hoặc nmcli d: để kiểm tra state của các card NIC.
+	ifconfig -a : để kiểm tra và hiển thị tất cả các kết nối hiện có(tên kết nối, địa chỉ IP, mask, MAC address,…)
+	ethtool (*) tên_port (ví dụ ethtool eth1 – với eth1 là NIC hiện tại của máy cài đặt CentOS): hiển thị các thông số cài đặt, các tham số mà NIC đó hỗ trợ, và là các tham số hoạt động của NIC đó). ngoài ra phần (*) có thể để trống hoặc còn có thêm các parameter nhỏ như -i (hiển thị driver giao tiếp),  --statistics (hiển thị lưu lượng nhận/gửi của NIC),…
+--------------------------------------------------------------------------------------------------------
+c, Add/delete virutal IP address vào interface NIC có sẵn
+-----Bí danh mạng (Network alias-es)
+Bí danh mạng (network alias) là 1 loại IP ảo, dựa trên NIC và IP gốc được cấp của NIC. có nhiệm vụ cùng IP gốc tải lên-xuống từ Net  NIC đó. Giả sử có 1 card NIC đang cắm là ens33 với địa chỉ IP hiện tại là 192.168.177.250/24. ta muốn tạo thêm 1 bí danh cho nó với địa chỉ là 192.168.177.251/24 cũng trên card NIC đó. Lệnh để cài đặt:
+ifconfig ens33:x 192.168.177.251 up (với x là số từ 0-n bắt đầu từ 0) 
+ifconfig -a (kiểm tra)
+ifconfig ens33:x down (gỡ bỏ)
+-----Giao thức mạng ảo (Virtual network interface)
+Cũng tương tự giống như bí danh mạng. Ví dụ cho y như trường hợp trên, ta cũng có thể sử dụng lệnh ip addr để add :
+ip addr add 192.168.177.251/24 dev ens33 (gán IP ảo 251 này cho ens33)
+ip addr del 192.168.177.251/24 dev ens33 (gỡ IP ảo 251 này khỏi ens33)
+Lưu ý. Khi muốn clear sạch sẽ các Virtual IP Address này, ta có thể sử dụng lệnh ip addr flush dev X (ví dụ X là ens33) hoặc service network restart để clear các setting của Virtual IP vì chúng có thuộc tính là IP tạm. chứ không phải IP gốc vì 1 NIC chỉ có 1 IP gốc. muốn set thêm IP permanent cho NIC đó thì ta có thể sửa trong /etc/network/interface. Chi tiết .
+--------------------------------------------------------------------------------------------------------
+d, Bảng định tuyến tĩnh (Static route board)
+Định tuyến mạng giúp ta có thể truy cập vào các network và interface khác với network và interface của máy đang sử dụng.
+Bảng định tuyến giúp ta biết muốn đi đến một mạng nào đó thì cần đi qua đâu, qua IP nào và qua NIC nào. câu lệnh liệt kê là route -n . Ví dụ lệnh để tạo 1 định tuyến có cấu trúc như sau:
+ip route add 172.16.1.0/22 via 192.168.177.10 dev ens33
+Giải thích:
+ip route add: là lệnh để tạo định tuyến
+172.16.1.0/22 : là mạng đích ta muốn kết nối. Cũng như là network 172.16.1.0 với mask 255.255.252.0 (prefix /22)
+via 192.168.177.10 : Địa chỉ IP ra/vào như là bộ định tuyến thứ cấp mà ta đang thêm một định tuyến. (nên set static)
+ens33: là card NIC sẽ dùng để truy nhập, nhận gửi dữ liệu vào network 172.16.1.0/22 (card NIC này có IP set là 192.168.177.10 và nằm trong mạng 192.168.177.0/24)
+Lưu ý: Setting của Static route cũng là tạm giống như virtual IP, nếu sử dụng lệnh service network restart thì sẽ bị mất các setting tạm thời này.
+--------------------------------------------------------------------------------------------------------
+e, Network bonding
+NIC Bonding được tạo ra để cấu hình 2/nhiều card mạng chạy song song hỗ trợ lẫn nhau, giúp cân bằng tải và đáp ứng được tính sẵn sàng cao (High Availability) cho Linux Server (tương tự NIC Teaming của Windows Server). Nếu 1 trong các card ở trong cụm bị down thì các dịch vụ vẫn sẽ hoạt động bình thường trên các card mạng khác.
+Yêu cầu: Server có từ >2 Card NIC trở lên.Ví dụ Server chạy CentOS hiện đang có 2 card NIC là ens33 và ens34 và quản trị muốn cài NIC Bonding với card bond0 để đáp ứng cả 2 khả năng Load Balancing và Fault Tolerance. Tiến hành set NIC Bonding:
+Đăng nhập su, tiến hành stop dịch vụ network bằng lệnh (bước này quan trọng, phải set lệnh trước khi tiến hành làm):
+	service network stop
+B1. Tạo bond interface file tại thư mục /etc/sysconfig/network-scripts với tên ifcfg-bond0. Sửa nội dung file đó như sau:
+
+DEVICE=bond0
+TYPE=Bond
+NAME=bond0
+BONDING_MASTER=yes
+BOOTPROTO=none
+ONBOOT=yes
+IPADDR=x.x.x.x
+NETMASK=x.x.x.x
+GATEWAY=x.x.x.x
+BONDING_OPTS="mode=5 miimon=100"
+
+Lần lượt sửa X là IP và Y là chế độ bonding ở phần bôi đậm sao cho phù hợp với network hiện tại của hệ thống. Tại phần BONDING_OPTS có thể thay theo các mode dưới đây:
+mode = 0: balance-rr (round - robin) (có LB, không FT)
+mode = 1: active - backup (có FT, không LB)
+mode = 2: balance - xor (có FT + LB)
+mode = 3: broadcast (có FT, không LB)
+mode = 4: 802.3ad (có FT + LB)
+mode = 5: balance - tlb  (có FT + LB)
+mode = 6: balance - alb (có FT + LB)
+
+B2. Tiến hành sửa config của ifcfg-ens33 và ifcfg-ens34 cũng trong thư mục với ifcfg-bond0 bằng việc thêm các config này vào và xóa các config cũ (lưu ý giữ lại và để nguyên các config NAME, TYPE, DEVICE, UUID, HWADDR (nếu có) để tránh lỗi):
+
+BOOTPROTO=none
+ONBOOT=yes
+MASTER=bond0
+SLAVE=yes
+
+Sau khi lưu các config này, tiến hành gõ service network restart để khởi động lại dịch vụ mạng. Sau đó gõ ifconfig -a và nmcli d để kiểm tra và test.
+--------------------------------------------------------------------------------------------------------
+
+
+
+
+--------------------------------------------------------------------------------------------------------
+*Hướng dẫn add sudo permission cho account hiện thời (khi gõ sudo báo lỗi You need to be root to perform this command):
++tại dấu nhắc, gõ su
+	+gõ root password (khi cài đặt centos sẽ có phần root password)
+	+Xảy ra 2 trường hợp:
+-Khi user hiện là [root@test centtest] thì tiếp tục gõ usermod -aG wheel centtest và lệnh su – centtest (centtest là tên user hiện tại).
+		-Khi muốn 1 user mới (ví dụ user abcd, ta tiến hành gõ lần lượt 3 lệnh):
+# adduser abcd (add 1 user abcd)
+# passwd centostest (mật khẩu của user đó)
+# usermod -aG wheel abcd (add vào group quyền su hiện tại)
+	+để kiểm tra/test xem user centtest đã có quyền chưa, ta gõ sudo yum update (tiến hành update – download các bản vá cho hệ thống centos)
+--------------------------------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------------------------------
+*Hướng dẫn update hệ thống CentOS khi CentOS quá cũ:
+	+Tại dấu nhắc, ta gõ (sudo) yum check-update – nhập pass
+	+Sau đó, tiến hành gõ (sudo) yum upgrade – nhập pass
+	+Các gói khuyến khích nên cài đặt thêm sau khi update hệ thống:
+				(sudo) yum install -y nano
+				(sudo) yum install -y perl
+				(sudo) yum install -y net-tools
+		  	(sudo)	yum install -y tcp_wrappers
+(sudo)	yum install -y wget
+(sudo) yum install -y epel-release
+(sudo) yum install -y vsftpd
+(sudo) yum install -y ntfsprogs
+	+Nếu quá trình thành công, ta gõ sudo yum clean all để dọn sạch các tệp nén đã tải về hệ thống để update, nếu không thành công thì add sudo permission cho account hiện hành đang gõ lệnh hoặc vào thẳng su để update hệ thống hiện tại
+--------------------------------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------------------------------
+*Đồng bộ thời gian CentOS với Internet bằng ntpdate
++Tại dấu nhắc, ta gõ sudo yum install ntp ntpdate nếu user đã add su permission hoặc yum install ntp ntpdate nếu login vào su. Để nhanh nhất, nên login vào su.
++Tiếp tục gõ các lệnh sau:			
+		(sudo) yum install chrony
+systemctl start ntpdate (Khởi chạy ntpd)
+systemctl enable ntpdate (Kích hoạt ntpd)
+systemctl status ntpdate (Trạng thái của ntpd, nếu nó đã Active thì sẽ tiến hành làm bước tiếp theo, còn không thì phải kiểm tra lại)
+	+Tiếp tục add server để CentOS có thể lấy thời gian từ các server đó:
+ntpdate -u -s 1.asia.pool.ntp.org 0.asia.pool.ntp.org
+ntpdate -q 1.asia.pool.ntp.org 0.asia.pool.ntp.org
+	+Sau khi hoàn thành, tiến hành khởi động lại service ntpd:
+			systemctl restart ntpdate
+	Bật trạng thái đồng bộ và kiểm tra trạng thái đồng bộ của NTP Synchronized:
+			timedatectl set-ntp on
+			timedatectl
+Lưu ý: Nếu NTP Synchronization vẫn ở trạng thái No, thì gõ lần lượt các lệnh sau đây:
+service ntpd stop
+ntpd -gq (đợi 1 lát)
+systemctl start ntpd
+service ntpd start
+timedatectl set-ntp on
+			timedatectl
+Sau đó kiểm tra lại trạng thái đồng bộ như trên, nếu vẫn không được thì restart bằng lệnh reboot.
+--------------------------------------------------------------------------------------------------------
+
+
+
+
+--------------------------------------------------------------------------------------------------------
+*hosts.allow/hosts.deny
+Hoạt động giống y như một tường lửa, tạo rule chặn/cho phép điều khiển/truy cập hệ thống ở mức ứng dụng. Để sửa thì ta phải có quyền su permission. đăng nhập su và mở file tại dấu nhắc
+vi /etc/hosts.allow
+vi /etc/hosts.deny
+Thứ tự ưu tiên lệnh sẽ là /etc/hosts.allow trước, rồi đến /etc/hosts.deny. 
+Trước tiên, để làm thì cần cài đặt gói TCP Wrappers. Đăng nhập vào su, tại dấu nhắc ta gõ:
+yum -y install tcp_wrappers
+Các parameter mẫu có thể được add trong hosts.allow/hosts.deny:
+vsftpd : 192.168.177.  : cho phép/chặn tất cả client của mạng 192.168.177.0 được phép kết nối FTP 
+sshd : 192.168.177.250 , 192.168.177.251 : cho phép/chặn kết nối SSH trên 2 IP .250 và .251 
+Ngoài ra, ta có thể sử dụng cả lệnh block trên hosts.allow mà không cần tới hosts.deny:
+Ví dụ: 
+ALL EXCEPT vsftpd: 192.168.177. : Mọi client trên mạng 192.168.177.0 sẽ được sử dụng mọi services, nhưng trừ service FTP ra không thể sử dụng được.
+--------------------------------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------------------------------
+*rc.local , edit rc.local
+Là file cho phép khởi động/thực thi các câu lệnh khi hệ thống bắt đầu startup/khởi động lên sau quá trình khởi động/khởi động lại.
+Trước tiên, để sửa file này thì ta cần đăng nhập su permission. Trong trường hợp chạy câu lệnh này dưới quyền user dưới cấp su, nên cấp quyền sudo cho user trước.
+Tiến hành vào su thiết lập quyền thực thi: chmod ugo+rwx /etc/rc.d/rc.local
+Tiến hành edit file /etc/rc.d/rc.local bằng vi và save lại, ví dụ ta thêm lệnh
+	cat /etc/rc.d/rc.local
+Sau đó, enable dịch vụ và bật dịch vụ rc-local: 
+systemctl enable rc-local
+	systemctl start rc-local
+Tiến hành kiểm tra dịch vụ rc-local:
+systemctl status rc-local.service
+Kiểm tra nếu thấy phần active của dịch vụ ghi là Active: active (exited) thì dịch vụ rc.local đã kích hoạt
+--------------------------------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------------------------------
+*sysctl.conf – limits.conf
+-Tuning sysctl.conf giúp hệ thống Linux hoạt động hiệu quả hơn, nhanh hơn.
+-Tuning limits.conf để tăng/giảm giới hạn mở file application/command/script bởi người quản trị/người sử dụng Linux.
+Hướng dẫn load sysctl.conf
+B1. Tiến hành đăng nhập su, set permission cho file /etc/sysctl.conf:
+chmod ugo+rwx /etc/sysctl.conf
+B2. Thoát khỏi su bằng lệnh exit, tiến hành sửa file sysctl.conf sao cho thích hợp:
+	sudo vi /etc/sysctl.conf
+Ở đây ví dụ một đoạn code giúp tuning hệ thống trở nên tốt hơn thông qua file sysctl.conf:
+###########################################################################
+###TUNING SYSTEM PERFORMANCE###
+# Increase size of file handles and inode cache
+fs.file-max = 2097152
+#
+# Do less swapping
+vm.swappiness = 10
+vm.dirty_ratio = 60
+vm.dirty_background_ratio = 2
+#
+### TUNING NETWORK PERFORMANCE ###
+#
+# Default Socket Receive Buffer
+net.core.rmem_default = 31457280
+#
+# Maximum Socket Receive Buffer
+net.core.rmem_max = 12582912
+#
+# Increase the tcp-time-wait buckets pool size to prevent simple DOS attacks
+net.ipv4.tcp_max_tw_buckets = 1440000
+net.ipv4.tcp_tw_recycle = 1
+net.ipv4.tcp_tw_reuse = 1
+#
+##########################################################################
+Ta thêm đoạn này vào phía dưới của file /etc/sysctl.conf và lưu lại.
+B3. Tiến hành load file vừa cấu hình để áp dụng các setting bằng lệnh:
+sudo sysctl -p
+B4. Nếu server sau khi load config đã tuning này chạy ổn định và nhanh hơn, để mỗi lần khởi động lên thì server có thể tự động load config tốt này thì ta có thể tiến hành add lệnh sudo sysctl -p như ở trên đã load vào trong file /etc/rc.d/rc.local (hướng dẫn ở trên).
+--------------------------------------------------------------------------------------------------------
+
+
+
+
+
+--------------------------------------------------------------------------------------------------------
+* SELinux - firewalld – iptables
+a, SELinux
+SELinux (Security-enhanced Linux) là một tính năng cho phép bảo mật của kernel trong Linux, được tạo ra để bảo vệ server trước các setting lỗi/sai hoặc các daemon bị xâm nhập. SELinux đặt giới hạn cho server giúp server an toàn.
+-Vô hiệu hóa tạm thời (Temporarily disable until system restart):
+Đăng nhập vào su, gõ lần lượt 3 lệnh sau:
+		echo 0 > /etc/selinux/enforce
+		setenforce 0
+		sestatus
+Nếu ở phần Current mode tại status là Permissive => đã vô hiệu hóa tạm thời thành công. Nếu muốn bật lại sau khi không muốn ở chế độ tạm thời nữa thì ta thay số 0 thành số 1 trong hai câu lệnh trên hoặc reboot lại Server.
+
+-Vô hiệu hóa vĩnh viễn SELinux:
+Đăng nhập vào su, sử dụng lệnh edit file vi /etc/selinux/config
+File đó sẽ có nội dung sau:
+
+#######################################################################
+# SELINUX= can take one of these three values:
+# enforcing - SELinux security policy is enforced.
+# permissive - SELinux prints warnings instead of enforcing.
+# disabled - No SELinux policy is loaded.
+SELINUX=enforcing
+######################################################################
+Thay phần tô đậm enforcing thành disabled, lưu lại và reboot để Server nhận config mới.
+Muốn bật thì đổi ngược lại từ disabled thành enforcing.
+b, firewall-cmd
+Là 1 dịch vụ cung cấp tường lửa được quản lý động với sự hỗ trợ của các vùng mạng hoặc tường lửa, qua đó xác định độ tin cậy của các kết nối mạng hoặc các giao thức mạng. Hỗ trợ IPv4, cầu mạng (bridge network) hoặc dải IP/alias IP được set.
+-Để liệt kê tất cả cấu hình đang được áp dụng của firewall-cmd:
+		(sudo) firewall-cmd –list-all
+-Để enable/cho phép 1 port TCP X (với parameter vĩnh viễn là --permanent) đi qua firewall tại zone A (public/drop/block/external/internal/dmz/work/home/trusted) (X, A tùy vào người quản trị set, và X ngoài port cụ thể ra thì có thể set là 1 dải port. ví dụ --add-port=4000-5000/TCP):
+(sudo) firewall-cmd --zone=A --permanent --add-port=X/tcp 
+-Để cho phép
+c, IPTables
+CentOS đa số sử dụng Firewall-cmd làm tường lửa mặc định thay vì sử dụng IPTables.
+--------------------------------------------------------------------------------------------------------
+
+
+
+
+--------------------------------------------------------------------------------------------------------
+*Câu lệnh cơ bản về phân vùng/làm việc với HDD:
+Các cấu trúc đĩa/phân vùng trong tất cả các Linux distro, mà cụ thể ở đây là CentOS gồm có:
+	-Các loại hệ đĩa: hd* (Hard disk drive IDE), sd* (SCSI Disk drive), cd*(CD ROM),…
+	-Các loại phân vùng: primary, extended và logical
+	-Các chuẩn ổ đĩa: MBR (Master Boot Record), GPT (GUID Partition Table)
+	-File system: ext2, ext3, ext4, swap, xfs, vfat, FAT16, FAT32, NTFS,…
+-Để tạo phân vùng trên đĩa SCSI (ví dụ về một phân vùng ext4) sử dụng parted:
+	(sudo) parted -l
+	(sudo) parted /dev/sdX (X được ký hiêụ từ B trở đi)
+	mklabel X (X là bsd, loop (raw disk access), gpt, mac, msdos, pc98, sun. thường là msdos với ổ lưu trữ sau cùng và GPT với hệ điều hành)
+mkpart primary X [Phần đầu đĩa] [Phần cuối đĩa] (X là ext2, ext3, ext4, fat16, fat32, hfs, hfsx, hfs+, linux-swap, NTFS, reiserfs, ufs, btrfs. Ví dụ mkpart primary ext4 0 1000MB . => Lệnh sẽ tạo phân vùng 1000MB từ đầu ổ tới khi đủ 1000MB - Dung lượng chính xác nên điền MB)
+print
+quit
+	(sudo) mkfs.X /dev/sdb1
+(sudo) mkdir -p B (thường là /mnt/sdb1 hoặc thư mục nào đó, ví dụ /dulieu phục vụ công việc hoặc database)
+(sudo) mount -t auto /dev/sdb1 B (sử dụng B ở trên)
+Cuối cùng hiển thị xem partition đã được mount hay chưa bằng lệnh (sudo) df -hT
+
+LƯU Ý: ĐỂ TẨY Ổ (về trạng thái Unallocated): shred -n 5 -vz /dev/*dX (* là s - SCSI hoặc h - IDE Drive, X là ổ cứng a,b,c,d,e,…)
+
+Sau đó, cần phải add thông số của partition này vào trong /etc/fstab. Tiến hành sửa file này:
+B1. Lấy UUID của các phân vùng cần mount: đăng nhập su rồi gõ lệnh blkid. Sử dụng SSH connect bằng 3rd software để tiến hành copy ra.
+B2. File /etc/fstab sẽ có cấu trúc như sau:
+####################################################################
+# /etc/fstab
+# Created by anaconda on Mon Jul 15 14:47:01 2019
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+/dev/mapper/centos-root /                       xfs     defaults        0 0
+UUID=e45b7599-b5ad-4ed8-be22-4594d9c476b4 /boot          xfs     defaults        0 0
+/dev/mapper/centos-swap swap                    swap    defaults        0 0
+#####################################################################
+	B3: Tiến hành thêm các dòng dưới, và thêm thuộc tính của phân vùng: Giả sử có 2 phân vùng sau:
+/dev/sdb1 : UUID=xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx      cần mount cho /dulieu
+/dev/sdb2 : UUID=yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyy     cần mount cho /logcuadulieu
+
+Cấu trúc từng dòng trong file /etc/fstab sau khi add sẽ có dạng:
+UUID=xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx [mountpoint] [filesystem] [option] [BO] [fsck]
+
+Trong đó:
+	-UUID: là định danh của part/dev cần mount. UUID được hiển thị bằng lệnh blkid
+	-[mountpoint]: là thư mục đích cần mount. ví dụ /dulieu hoặc /logcuadulieu,…
+	-[filesystem]: là filesystem của part/disk đó. thường sẽ chọn theo filesystem định dạng lúc đầu của part/dev khi format.
+	-[option]: là thuộc tính mount. thường thường nếu để lưu dữ liệu bt thì sẽ để defaults
+-[BO]: là Backup option. set 0 (defaults) để bỏ qua tính năng và 1 để sử dụng tính năng dump backup program để backup (trong 1 vài case đặc biệt).
+-[fsck]: tính năng file system checker, giúp check part/dev có gặp lỗi gì trong khi khởi động không. 0 là tắt, 1 là check ưu tiên các thư mục root và 2 là check tất cả.
+Như vậy, ta sẽ có dòng mount /dev/sdb1 cho thư mục /dulieu dưới dạng ext3 (như đã set khi tạo part):
+UUID=xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx /dulieu   ext3   defaults   0 0
+Tiến hành làm tương tự với phân vùng còn lại. Sau khi save thành công, tiến hành gõ lệnh mount -a để kiểm tra. Nếu báo lỗi thì kiểm tra lại phân vùng xem có gõ thiếu lệnh hoặc set thông số sai hay không.
+Mục đích của việc mount = UUID giúp trỏ chính xác tới part/dev, gỡ ra lắp part/dev khác không bị lỗi mount nhầm, tránh tình trạng gỡ thiết bị ra/vào thì hệ thống có thể sẽ mount sai. khi có nhu cầu mount part/dev khác thì làm tương tự.
+
+Hướng dẫn tạo phân vùng NTFS trên CentOS (unallocated space)
+Giả sử có 1 đĩa mới sdc mới mua về cắm, dung lượng 120GB, ta cần tạo 1 phân vùng NTFS được mount vào /dulieuqualai để access qua lại giữa Windows Platform (vd Client Win7 kế toán) và Linux Platform (CentOS Server)
+B1. đăng nhập Su, gõ yum install -y ntfsprogs
+	B2: parted /dev/sdc
+	mklabel msdos
+mkpart primary NTFS 0MB 122880MB (hoặc 0% 100%)
+print (tới bước này nó sẽ tạo 2 part, 1 là reserved và 1 là part chính. lưu ý part chính thường là 1. để ý bước này)
+quit
+mkntfs /dev/sdc1
+	
+
+
+	--------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
