@@ -123,11 +123,11 @@ Sau khi lưu các config này, tiến hành gõ service network restart để kh
 				(sudo) yum install -y nano
 				(sudo) yum install -y perl
 				(sudo) yum install -y net-tools
-		  	(sudo)	yum install -y tcp_wrappers
-(sudo)	yum install -y wget
-(sudo) yum install -y epel-release
-(sudo) yum install -y vsftpd
-(sudo) yum install -y ntfsprogs
+		  		(sudo)	yum install -y tcp_wrappers
+				(sudo)	yum install -y wget
+				(sudo) yum install -y epel-release
+				(sudo) yum install -y vsftpd
+				(sudo) yum install -y ntfsprogs
 	+Nếu quá trình thành công, ta gõ sudo yum clean all để dọn sạch các tệp nén đã tải về hệ thống để update, nếu không thành công thì add sudo permission cho account hiện hành đang gõ lệnh hoặc vào thẳng su để update hệ thống hiện tại
 --------------------------------------------------------------------------------------------------------
 
