@@ -138,24 +138,24 @@ Sau khi lưu các config này, tiến hành gõ service network restart để kh
 +Tại dấu nhắc, ta gõ sudo yum install ntp ntpdate nếu user đã add su permission hoặc yum install ntp ntpdate nếu login vào su. Để nhanh nhất, nên login vào su.
 +Tiếp tục gõ các lệnh sau:			
 		(sudo) yum install chrony
-systemctl start ntpdate (Khởi chạy ntpd)
-systemctl enable ntpdate (Kích hoạt ntpd)
-systemctl status ntpdate (Trạng thái của ntpd, nếu nó đã Active thì sẽ tiến hành làm bước tiếp theo, còn không thì phải kiểm tra lại)
+		systemctl start ntpdate (Khởi chạy ntpd)
+		systemctl enable ntpdate (Kích hoạt ntpd)
+		systemctl status ntpdate (Trạng thái của ntpd, nếu nó đã Active thì sẽ tiến hành làm bước tiếp theo, còn không thì phải kiểm tra lại)
 	+Tiếp tục add server để CentOS có thể lấy thời gian từ các server đó:
-ntpdate -u -s 1.asia.pool.ntp.org 0.asia.pool.ntp.org
-ntpdate -q 1.asia.pool.ntp.org 0.asia.pool.ntp.org
+		ntpdate -u -s 1.asia.pool.ntp.org 0.asia.pool.ntp.org
+		ntpdate -q 1.asia.pool.ntp.org 0.asia.pool.ntp.org
 	+Sau khi hoàn thành, tiến hành khởi động lại service ntpd:
-			systemctl restart ntpdate
+		systemctl restart ntpdate
 	Bật trạng thái đồng bộ và kiểm tra trạng thái đồng bộ của NTP Synchronized:
-			timedatectl set-ntp on
-			timedatectl
+		timedatectl set-ntp on
+		timedatectl
 Lưu ý: Nếu NTP Synchronization vẫn ở trạng thái No, thì gõ lần lượt các lệnh sau đây:
-service ntpd stop
-ntpd -gq (đợi 1 lát)
-systemctl start ntpd
-service ntpd start
-timedatectl set-ntp on
-timedatectl
+		service ntpd stop
+		ntpd -gq (đợi 1 lát)
+		systemctl start ntpd
+		service ntpd start
+		timedatectl set-ntp on
+		timedatectl
 Sau đó kiểm tra lại trạng thái đồng bộ như trên, nếu vẫn không được thì restart bằng lệnh reboot.
 --------------------------------------------------------------------------------------------------------
 
@@ -188,10 +188,10 @@ Tiến hành vào su thiết lập quyền thực thi: chmod ugo+rwx /etc/rc.d/r
 Tiến hành edit file /etc/rc.d/rc.local bằng vi và save lại, ví dụ ta thêm lệnh
 	cat /etc/rc.d/rc.local
 Sau đó, enable dịch vụ và bật dịch vụ rc-local: 
-systemctl enable rc-local
+	systemctl enable rc-local
 	systemctl start rc-local
 Tiến hành kiểm tra dịch vụ rc-local:
-systemctl status rc-local.service
+	systemctl status rc-local.service
 Kiểm tra nếu thấy phần active của dịch vụ ghi là Active: active (exited) thì dịch vụ rc.local đã kích hoạt
 --------------------------------------------------------------------------------------------------------
 
@@ -270,7 +270,7 @@ Là 1 dịch vụ cung cấp tường lửa được quản lý động với s�
 -Để liệt kê tất cả cấu hình đang được áp dụng của firewall-cmd:
 		(sudo) firewall-cmd –list-all
 -Để enable/cho phép 1 port TCP X (với parameter vĩnh viễn là --permanent) đi qua firewall tại zone A (public/drop/block/external/internal/dmz/work/home/trusted) (X, A tùy vào người quản trị set, và X ngoài port cụ thể ra thì có thể set là 1 dải port. ví dụ --add-port=4000-5000/TCP):
-(sudo) firewall-cmd --zone=A --permanent --add-port=X/tcp 
+		(sudo) firewall-cmd --zone=A --permanent --add-port=X/tcp 
 -Để cho phép
 c, IPTables
 CentOS đa số sử dụng Firewall-cmd làm tường lửa mặc định thay vì sử dụng IPTables.
@@ -290,12 +290,12 @@ Các cấu trúc đĩa/phân vùng trong tất cả các Linux distro, mà cụ 
 	(sudo) parted -l
 	(sudo) parted /dev/sdX (X được ký hiêụ từ B trở đi)
 	mklabel X (X là bsd, loop (raw disk access), gpt, mac, msdos, pc98, sun. thường là msdos với ổ lưu trữ sau cùng và GPT với hệ điều hành)
-mkpart primary X [Phần đầu đĩa] [Phần cuối đĩa] (X là ext2, ext3, ext4, fat16, fat32, hfs, hfsx, hfs+, linux-swap, NTFS, reiserfs, ufs, btrfs. Ví dụ mkpart primary ext4 0 1000MB . => Lệnh sẽ tạo phân vùng 1000MB từ đầu ổ tới khi đủ 1000MB - Dung lượng chính xác nên điền MB)
-print
-quit
+	mkpart primary X [Phần đầu đĩa] [Phần cuối đĩa] (X là ext2, ext3, ext4, fat16, fat32, hfs, hfsx, hfs+, linux-swap, NTFS, reiserfs, ufs, btrfs. Ví dụ mkpart primary ext4 0 1000MB . => Lệnh sẽ tạo phân vùng 1000MB từ đầu ổ tới khi đủ 1000MB - Dung lượng chính xác nên điền MB)
+	print
+	quit
 	(sudo) mkfs.X /dev/sdb1
-(sudo) mkdir -p B (thường là /mnt/sdb1 hoặc thư mục nào đó, ví dụ /dulieu phục vụ công việc hoặc database)
-(sudo) mount -t auto /dev/sdb1 B (sử dụng B ở trên)
+	(sudo) mkdir -p B (thường là /mnt/sdb1 hoặc thư mục nào đó, ví dụ /dulieu phục vụ công việc hoặc database)
+	(sudo) mount -t auto /dev/sdb1 B (sử dụng B ở trên)
 Cuối cùng hiển thị xem partition đã được mount hay chưa bằng lệnh (sudo) df -hT
 
 LƯU Ý: ĐỂ TẨY Ổ (về trạng thái Unallocated): shred -n 5 -vz /dev/*dX (* là s - SCSI hoặc h - IDE Drive, X là ổ cứng a,b,c,d,e,…)
@@ -326,8 +326,8 @@ Trong đó:
 	-[mountpoint]: là thư mục đích cần mount. ví dụ /dulieu hoặc /logcuadulieu,…
 	-[filesystem]: là filesystem của part/disk đó. thường sẽ chọn theo filesystem định dạng lúc đầu của part/dev khi format.
 	-[option]: là thuộc tính mount. thường thường nếu để lưu dữ liệu bt thì sẽ để defaults
--[BO]: là Backup option. set 0 (defaults) để bỏ qua tính năng và 1 để sử dụng tính năng dump backup program để backup (trong 1 vài case đặc biệt).
--[fsck]: tính năng file system checker, giúp check part/dev có gặp lỗi gì trong khi khởi động không. 0 là tắt, 1 là check ưu tiên các thư mục root và 2 là check tất cả.
+	-[BO]: là Backup option. set 0 (defaults) để bỏ qua tính năng và 1 để sử dụng tính năng dump backup program để backup (trong 1 vài case đặc biệt).
+	-[fsck]: tính năng file system checker, giúp check part/dev có gặp lỗi gì trong khi khởi động không. 0 là tắt, 1 là check ưu tiên các thư mục root và 2 là check tất cả.
 Như vậy, ta sẽ có dòng mount /dev/sdb1 cho thư mục /dulieu dưới dạng ext3 (như đã set khi tạo part):
 UUID=xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx /dulieu   ext3   defaults   0 0
 Tiến hành làm tương tự với phân vùng còn lại. Sau khi save thành công, tiến hành gõ lệnh mount -a để kiểm tra. Nếu báo lỗi thì kiểm tra lại phân vùng xem có gõ thiếu lệnh hoặc set thông số sai hay không.
