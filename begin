@@ -336,14 +336,15 @@ Mục đích của việc mount = UUID giúp trỏ chính xác tới part/dev, g
 Hướng dẫn tạo phân vùng NTFS trên CentOS (unallocated space)
 Giả sử có 1 đĩa mới sdc mới mua về cắm, dung lượng 120GB, ta cần tạo 1 phân vùng NTFS được mount vào /dulieuqualai để access qua lại giữa Windows Platform (vd Client Win7 kế toán) và Linux Platform (CentOS Server)
 B1. đăng nhập Su, gõ yum install -y ntfsprogs
-	B2: parted /dev/sdc
+
+B2: 	parted /dev/sdc
 	mklabel msdos
-mkpart primary NTFS 0MB 122880MB (hoặc 0% 100%)
-print (tới bước này nó sẽ tạo 2 part, 1 là reserved và 1 là part chính. lưu ý part chính thường là 1. để ý bước này)
-quit
-mkntfs /dev/sdc1
-(sudo) mkdir -p B (thường là /mnt/sdb1 hoặc thư mục nào đó, ví dụ /dulieu phục vụ công việc hoặc database)
-(sudo) mount -t auto /dev/sdc1 B (sử dụng B ở trên)
+	mkpart primary NTFS 0MB 122880MB (hoặc 0% 100%)
+	print (tới bước này nó sẽ tạo 2 part, 1 là reserved và 1 là part chính. lưu ý part chính thường là 1. để ý bước này)
+	quit
+	mkntfs /dev/sdc1
+	(sudo) mkdir -p B (thường là /mnt/sdb1 hoặc thư mục nào đó, ví dụ /dulieu phục vụ công việc hoặc database)
+	(sudo) mount -t auto /dev/sdc1 B (sử dụng B ở trên)
 Cuối cùng hiển thị xem partition đã được mount hay chưa bằng lệnh (sudo) df -hT
 --------------------------------------------------------------------------------------------------------
 
