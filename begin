@@ -332,7 +332,7 @@ Như vậy, ta sẽ có dòng mount /dev/sdb1 cho thư mục /dulieu dưới d�
 UUID=xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx /dulieu   ext3   defaults   0 0
 Tiến hành làm tương tự với phân vùng còn lại. Sau khi save thành công, tiến hành gõ lệnh mount -a để kiểm tra. Nếu báo lỗi thì kiểm tra lại phân vùng xem có gõ thiếu lệnh hoặc set thông số sai hay không.
 Mục đích của việc mount = UUID giúp trỏ chính xác tới part/dev, gỡ ra lắp part/dev khác không bị lỗi mount nhầm, tránh tình trạng gỡ thiết bị ra/vào thì hệ thống có thể sẽ mount sai. khi có nhu cầu mount part/dev khác thì làm tương tự.
-
+-----------------------------------------------------------------------------------------------------
 Hướng dẫn tạo phân vùng NTFS trên CentOS (unallocated space)
 Giả sử có 1 đĩa mới sdc mới mua về cắm, dung lượng 120GB, ta cần tạo 1 phân vùng NTFS được mount vào /dulieuqualai để access qua lại giữa Windows Platform (vd Client Win7 kế toán) và Linux Platform (CentOS Server)
 B1. đăng nhập Su, gõ yum install -y ntfsprogs
