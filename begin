@@ -342,10 +342,10 @@ mkpart primary NTFS 0MB 122880MB (hoặc 0% 100%)
 print (tới bước này nó sẽ tạo 2 part, 1 là reserved và 1 là part chính. lưu ý part chính thường là 1. để ý bước này)
 quit
 mkntfs /dev/sdc1
-	
-
-
-	--------------------------------------------------------------------------------------------------------
+(sudo) mkdir -p B (thường là /mnt/sdb1 hoặc thư mục nào đó, ví dụ /dulieu phục vụ công việc hoặc database)
+(sudo) mount -t auto /dev/sdc1 B (sử dụng B ở trên)
+Cuối cùng hiển thị xem partition đã được mount hay chưa bằng lệnh (sudo) df -hT
+--------------------------------------------------------------------------------------------------------
 
 
 
