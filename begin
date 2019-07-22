@@ -1,4 +1,8 @@
-CentOS 7
+CentOS 7 (nhấn Ctrl + F để tìm)
+
+
+
+
 --------------------------------------------------------------------------------------------------------
 *Cấu hình Network 
 a, Cài đặt – setting mạng
@@ -85,6 +89,7 @@ SLAVE=yes
 
 Sau khi lưu các config này, tiến hành gõ service network restart để khởi động lại dịch vụ mạng. Sau đó gõ ifconfig -a và nmcli d để kiểm tra và test.
 --------------------------------------------------------------------------------------------------------
+
 
 
 
