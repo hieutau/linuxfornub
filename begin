@@ -344,8 +344,10 @@ B2: 	parted /dev/sdc
 	quit
 	mkntfs /dev/sdc1
 	(sudo) mkdir -p B (thường là /mnt/sdb1 hoặc thư mục nào đó, ví dụ /dulieu phục vụ công việc hoặc database)
-	(sudo) mount -t auto /dev/sdc1 B (sử dụng B ở trên)
+	(sudo) mount -t auto /dev/sdc1 B (sử dụng B là thư mục cần mount và đã tạo ở trên, ví dụ /dulieu)
 Cuối cùng hiển thị xem partition đã được mount hay chưa bằng lệnh (sudo) df -hT
+Lưu ý: Khi muốn mount ổ đĩa này sang 1 thư mục khác, cần đăng nhập vào su, sử dụng lệnh umount cho part đó và tiến hành mount lại tại 1 thư mục khác.
+
 --------------------------------------------------------------------------------------------------------
 
 
