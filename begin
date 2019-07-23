@@ -75,6 +75,8 @@ ONBOOT=yes
 IPADDR=x.x.x.x
 NETMASK=x.x.x.x
 GATEWAY=x.x.x.x
+DNS1=x.x.x.x
+DNS2=8.8.8.8
 BONDING_OPTS="mode=5 miimon=100"
 
 Lần lượt sửa X là IP và Y là chế độ bonding ở phần bôi đậm sao cho phù hợp với network hiện tại của hệ thống. Tại phần BONDING_OPTS có thể thay theo các mode dưới đây:
