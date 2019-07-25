@@ -384,34 +384,21 @@ u - update - cập nhật các file vào trong file nén archive đã có
 j - option của tar.bz2
 z - option của tar.gz
 J - option của xz
--Để nén 1 thư mục với đuôi tar: Trước tiên cần dùng cd để chuyển tới thư mục cần lưu file nén. Sau đó gõ:
-		tar -cf abc.tar A
--Để giải nén 1 file: 
-		tar -xf abc.tar
--để giải nén 1 file vào một thư mục khác với thư mục hiện tại:
-tar -xf abc.tar -C /abcdef/
-	Trong đó A có thể là /abcd/,… hoặc 1 file nào đó - ví dụ abc.txt hoặc đường dẫn tới file hoặc thư mục - /abcd/abc/tailieu.txt, hoặc thậm chí có thể là nhiều thư mục cùng 1 lúc (dir1 dir2 dir3 dirX )
-	
--Để nén 1 thư mục với đuôi tar.bz2. Tương tự như trên:
-		tar -cjf abc.tar.bz2 A
--Để giải nén 1 file tar.bz2: 
-		tar -xjf abc.tar.bz2
--để giải nén 1 file vào một thư mục khác với thư mục hiện tại:
-tar -xf abc.tar.bz2 -C /abcdef/
 
--Để nén 1 thư mục với đuôi tar.gz:
-		tar -czf abc.tar.gz A
--Để giải nén 1 file tar.gz: 
-		tar -xzf abc.tar.gz
--để giải nén 1 file vào một thư mục khác với thư mục hiện tại:
-tar -xf abc.tar.gz -C /abcdef/
+Ví dụ có 1 thư mục /tailieu, trong đó chứa 15-20 file document. Ta cần nén lại và gửi cho đi. tiến hành trỏ tới thư mục mẹ chứa thư mục tailieu bằng lệnh cd. Gõ lệnh sau:
 
--Để nén 1 thư mục với đuôi tar.xz:
-		tar -cJf abc.tar.xz A
--Để giải nén 1 file tar.xz: 
-		tar -xJf abc.tar.xz
--để giải nén 1 file vào một thư mục khác với thư mục hiện tại:
-tar -xf abc.tar.xz -C /abcdef/
+Nén:
+
+tar -cf tailieu.tar tailieu (dùng cho tar)
+tar -jcf tailieu.tar.bz2 tailieu (dùng cho tar.bz2)
+tar -zcf tailieu.tar.gz tailieu (dùng cho tar.gz)
+tar -Jcf tailieu.tar.xz tailieu (dùng cho tar.xz)
+
+Giải nén: 
+
+tar -xf tailieu* (chỉ cần dùng parameter gốc để giải nén ra, có thể sử dụng cho tất cả các file nén ở trên)
+
+
 Nếu muốn nén trực tiếp thư mục ngay tại thư mục đó, ta cd thẳng tới thư mục đó rồi gõ lệnh tar. Có thể thêm parameter v vào cùng với các parameter kia để hiển thị progress và list file được nén/giải nén. ví dụ xvzf, xvJf,…
 
 
