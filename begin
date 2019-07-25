@@ -441,7 +441,7 @@ Trong đó:
 B2. Lưu lại các config này thành 1 file mới
 B3: Sau đó chuyển qua sửa file /etc/fail2ban/jail.conf . Thay các giá trị bantime và maxretry sao cho giống với config lúc ở trên đã sửa. Chú ý thêm các giá trị sau:
 	findtime: đây là config giới hạn thời gian IP đó phải đăng nhập đúng
-	ignoreip: config này sẽ bỏ qua các giới hạn đăng nhập cho các IP khi IP đó được liệt kê ra trong file này. Thường thì người ta set IP này là IP loopback.
+	ignoreip: config này sẽ bỏ qua các giới hạn đăng nhập cho các IP khi IP đó được liệt kê ra trong file này. Thường thì người ta set IP này là IP loopback. Ta có thể set theo dải IP nội bộ hoặc IP chính xác của 1 máy nào đó.
 
 Sau khi config xong, tiến hành gõ service fail2ban restart để chạy service fail2ban và ép service này áp dụng config mới.
 Để quản lý fail2ban:
