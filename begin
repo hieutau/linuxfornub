@@ -413,6 +413,11 @@ Trước tiên, ta tiến hành cd tới thư mục mẹ của thư mục cần 
 Để giải nén ngay tại thư mục mẹ:
 	pax -zrf abcdef.tar.gz (hoặc file tar/gz bất kỳ, nếu đó là file tar thì bỏ z ra khỏi parameter zrf)
 
+
+
+
+
+
 **Bảo mật cơ bản/đơn giản:
 a, Sử dụng Fail2ban
 Fail2ban là công cụ giúp chặn các phiên cố gắng truy cập sai quá số lần quy định. Fail2ban được dùng để tránh/hạn chế tấn công từ bên ngoài (đa số là bruteforce) bằng cách cấm/ban IP trong 1 khoảng thời  gian nhất định khi IP đó cố gắng đăng nhập sai quá số lần cho phép trong config đã được set của fail2ban.
