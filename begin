@@ -125,11 +125,19 @@ Sau khi lưu các config này, tiến hành gõ service network restart để kh
 				(sudo) yum install -y nano
 				(sudo) yum install -y perl
 				(sudo) yum install -y net-tools
-		  		(sudo)	yum install -y tcp_wrappers
-				(sudo)	yum install -y wget
+		  		(sudo) yum install -y tcp_wrappers
+				(sudo) yum install -y wget
 				(sudo) yum install -y epel-release
 				(sudo) yum install -y vsftpd
 				(sudo) yum install -y ntfsprogs
+				(sudo) yum install -y p7zip
+				(sudo) yum install -y p7zip-plugins
+				(sudo) yum install -y zip
+				(sudo) yum install -y unzip
+				(sudo) yum install -y ntpdate
+				(sudo) yum install -y bzip2
+				(sudo) yum install -y pax
+
 	+Nếu quá trình thành công, ta gõ sudo yum clean all để dọn sạch các tệp nén đã tải về hệ thống để update, nếu không thành công thì add sudo permission cho account hiện hành đang gõ lệnh hoặc vào thẳng su để update hệ thống hiện tại
 --------------------------------------------------------------------------------------------------------
 
@@ -405,14 +413,15 @@ Nếu muốn nén trực tiếp thư mục ngay tại thư mục đó, ta cd th�
 
 
 b, pax
-pax cũng là một công cụ nén/giải nén giống như tar, nhưng chỉ support tar/gz. Tương tự, cài các package như trên.
+	pax cũng là một công cụ nén/giải nén giống như tar, nhưng chỉ support tar/gz. Tương tự, cài các package như trên.
 Giả dụ, có 1 thư mục A chứa các tệp tin âm nhạc, ảnh,… ta sẽ sử dụng pax để nén lại/giải nén:
 (LƯU Ý: không được ghi dấu “/” khi nén thư mục hiện tại, để tránh lỗi, thay vì ghi /A thì sẽ ghi A):
 Trước tiên, ta tiến hành cd tới thư mục mẹ của thư mục cần nén:
-Để nén gzip: pax -zwf abcdef.tar.gz A
-Để nén tar: pax -wf abcdef.tar A
+	Để nén gzip: pax -zwf abcdef.tar.gz A
+	Để nén tar: pax -wf abcdef.tar A
 	
-	Để giải nén ngay tại thư mục mẹ: pax -zrf abcdef.tar.gz (hoặc file tar/gz bất kỳ, nếu đó là file tar thì bỏ z ra khỏi parameter zrf)
+Để giải nén ngay tại thư mục mẹ:
+	pax -zrf abcdef.tar.gz (hoặc file tar/gz bất kỳ, nếu đó là file tar thì bỏ z ra khỏi parameter zrf)
 
 
 
