@@ -75,9 +75,12 @@ ONBOOT=yes
 IPADDR=x.x.x.x
 NETMASK=x.x.x.x
 GATEWAY=x.x.x.x
-DNS1=x.x.x.x
-DNS2=8.8.8.8
+DNS1=x.x.x.x (set DNS Primary của Google hoặc Trỏ đến Server nội bộ  nếu là Server nội bộ)
+DNS2=8.8.4.4
+DNS3=1.1.1.1
+DNS4=1.0.0.1
 BONDING_OPTS="mode=5 miimon=100"
+
 
 Lần lượt sửa X là IP và Y là chế độ bonding ở phần bôi đậm sao cho phù hợp với network hiện tại của hệ thống. Tại phần BONDING_OPTS có thể thay theo các mode dưới đây:
 mode = 0: balance-rr (round - robin) (có LB, không FT)
