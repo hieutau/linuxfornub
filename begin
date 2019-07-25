@@ -435,7 +435,7 @@ Trong đó:
 	filter = sshd : lọc kết nối SSH, nếu để mặc định là sshd thì fail2ban sẽ tự động trỏ tới file cấu hình /etc/fail2ban/filter.d/sshd.conf.
 	action = iptables[name=SSH, port=ssh, protocol=tcp] : là sử dụng hành động ban thông qua file iptables trong /etc/fail2ban/action.d/iptables.conf
 	logpath = /var/log/secure : các tiến trình ban IP/login sẽ ghi lại log file trong /var/log/secure
-	maxretry = 3 : giới hạn số lần thử đăng nhập lại. quá số lần này sẽ bị ban IP (nếu tính số lần được nhập lại password sẽ tính là n-1 lần nhập. như trường hợp này sẽ chỉ được 2 lần nhập password)
+	maxretry = 3 : giới hạn số lần thử đăng nhập lại. quá số lần này sẽ bị ban IP 
 	bantime = 3600 : là thời lượng bị ban, tính bằng giây(sec).
     Tùy vào nhu cầu của người quản trị, có thể thay các giá trị bantime/maxretry/….
 B2. Lưu lại các config này thành 1 file mới
