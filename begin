@@ -452,7 +452,7 @@ Sau khi config xong, tiến hành gõ service fail2ban restart để chạy serv
 
 LƯU Ý QUAN TRỌNG: Nếu fail2ban không thể start/restart, chạy lệnh sau để kiểm tra lỗi:
 	/usr/bin/fail2ban-client -v -v start 
-
+Sau đó, khi hoàn thành config, tiến hành add lệnh: sudo service fail2ban restart vào trong /etc/rc.d/rc.local để mỗi lần khởi động lại/khởi động lên thì hệ thống sẽ tự động load fail2ban.
 Để quản lý fail2ban:
 	fail2ban-client status sshd : theo dõi trạng thái, số người bị ban và IP bị ban
 	fail2ban-client set sshd banip X (X là IP cụ thể) : cấm 1 IP cụ thể không thể login được.
