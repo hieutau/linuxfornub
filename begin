@@ -412,12 +412,12 @@ Trước tiên, ta tiến hành cd tới thư mục mẹ của thư mục cần 
 	
 Để giải nén ngay tại thư mục mẹ:
 	pax -zrf abcdef.tar.gz (hoặc file tar/gz bất kỳ, nếu đó là file tar thì bỏ z ra khỏi parameter zrf)
+------------------------------------------------------------------------------------------------------------------
 
 
 
 
-
-
+----------------------------------------------------------------------------------------------------------------
 **Bảo mật cơ bản/đơn giản:
 a, Sử dụng Fail2ban
 Fail2ban là công cụ giúp chặn các phiên cố gắng truy cập sai quá số lần quy định. Fail2ban được dùng để tránh/hạn chế tấn công từ bên ngoài (đa số là bruteforce) bằng cách cấm/ban IP trong 1 khoảng thời  gian nhất định khi IP đó cố gắng đăng nhập sai quá số lần cho phép trong config đã được set của fail2ban.
@@ -457,6 +457,14 @@ Sau đó, khi hoàn thành config, tiến hành add lệnh: sudo service fail2ba
 	fail2ban-client status sshd : theo dõi trạng thái, số người bị ban và IP bị ban
 	fail2ban-client set sshd banip X (X là IP cụ thể) : cấm 1 IP cụ thể không thể login được.
 	fail2ban-client set sshd unbanip X (X là IP cụ thể) : gỡ ban/gỡ cấm cho 1 IP cụ thể trước đó đã đăng nhập sai nhiều lần.
+
+
+b, Tắt đăng nhập root trên ssh
+B1: Đăng nhập vào su
+B2: Mở file /etc/ssh/sshd_config
+B3: Sửa key PermitRootLogin yes -> no (nếu có dấu # ở đầu thì xóa dấu # để config nhận lệnh)
+B4: Add 1 key AllowUsers A (thay A bằng tên user thường login lên hệ thống - bước này quan trọng)
+Save lại, thoát ra và gõ service sshd restart
 
 
 
