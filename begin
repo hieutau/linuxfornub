@@ -280,7 +280,7 @@ Thay phần tô đậm enforcing thành disabled, lưu lại và reboot để Se
 Muốn bật thì đổi ngược lại từ disabled thành enforcing.
 b, firewall-cmd
 Là 1 dịch vụ cung cấp tường lửa được quản lý động với sự hỗ trợ của các vùng mạng hoặc tường lửa, qua đó xác định độ tin cậy của các kết nối mạng hoặc các giao thức mạng. Hỗ trợ IPv4, cầu mạng (bridge network) hoặc dải IP/alias IP được set.
--Để liệt kê tất cả cấu hình đang được áp dụng của firewall-cmd:
+-Để liệt kê tất cả cấu hình đang được áp dụng của firewall-cmd: 
 		(sudo) firewall-cmd –list-all
 -Để enable/cho phép 1 port TCP X (với parameter vĩnh viễn là --permanent) đi qua firewall tại zone A (public/drop/block/external/internal/dmz/work/home/trusted) (X, A tùy vào người quản trị set, và X ngoài port cụ thể ra thì có thể set là 1 dải port. ví dụ --add-port=4000-5000/TCP):
 		(sudo) firewall-cmd --zone=A --permanent --add-port=X/tcp 
