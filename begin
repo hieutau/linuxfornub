@@ -24,6 +24,8 @@ Giả dụ Network hiện tại CentOS đang tham gia là 192.168.177.0/22, ta s
 Sau khi setting xong, ta gõ service network restart , sau đó nhập password của root vào để tiến hành reset mạng.
 --------------------------------------------------------------------------------------------------------
 b, Kiểm tra/truy xuất thông tin NIC
+
+lệnh show port đang sử dụng: netstat -nltp
 ethtool là một công cụ giúp truy xuất, tìm kiếm thông tin các card NIC và các trình driver NIC đang hiện có trên máy cài đặt Linux (cụ thể ở đây là CentOS)
 Ta có các lệnh sau:
 	nmcli hoặc nmcli d: để kiểm tra state của các card NIC.
