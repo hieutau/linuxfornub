@@ -142,6 +142,7 @@ Sau khi lưu các config này, tiến hành gõ service network restart để kh
 				(sudo) yum install -y ntpdate
 				(sudo) yum install -y bzip2
 				(sudo) yum install -y pax
+				(sudo) yum install -y htop
 
 	+Nếu quá trình thành công, ta gõ sudo yum clean all để dọn sạch các tệp nén đã tải về hệ thống để update, nếu không thành công thì add sudo permission cho account hiện hành đang gõ lệnh hoặc vào thẳng su để update hệ thống hiện tại
 --------------------------------------------------------------------------------------------------------
