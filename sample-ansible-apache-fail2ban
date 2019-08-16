@@ -1,0 +1,43 @@
+Apache+fail2ban 
+Yêu cầu: Xử lý và tạo 2 file jail.conf và jail.local rồi để trong thư mục ansible cùng với template yaml dưới đây:
+#############
+---
+- hosts: client
+  become: yes
+
+  tasks:
+  - name: Install apache
+    apt: 
+      name: apache2
+      state: present
+
+  - name: Install fail2ban
+    apt: 
+      name: fail2ban
+      state: latest
+
+  - name: restart apache
+    service: 
+      name: apache2 
+      state: started 
+      enabled: yes
+
+  - name: Copy config conf to client
+    copy:
+      src: /etc/ansible/jail.conf
+      dest: /etc/fail2ban/
+      force: yes
+
+
+  - name: Copy config local to client
+    copy:
+      src: /etc/ansible/jail.local
+      dest: /etc/fail2ban/
+
+  - name: restart fail2ban
+    service: 
+      name: fail2ban
+      state: restarted 
+      enabled: yes
+      
+      
