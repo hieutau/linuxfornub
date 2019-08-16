@@ -1,5 +1,4 @@
-Auto detect OS to install Apache
-
+# Auto detect OS to install Apache
 ---
 - hosts: client
   become: yes
