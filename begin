@@ -428,6 +428,7 @@ Cài đặt: Trước tiên cần đăng nhập vào su, kiểm tra và cài đ�
 	yum install epel-release
 	yum install fail2ban*
 Sau đó tiến hành config: 
+----Trên CentOS:
 B1: Tạo file /etc/fail2ban/jail.local , thêm với nội dung sau:
 ###############################################################
 [sshd]
@@ -451,7 +452,10 @@ B3: Sau đó chuyển qua sửa file /etc/fail2ban/jail.conf . Thay các giá tr
 	findtime: đây là config giới hạn thời gian IP đó phải đăng nhập đúng
 	ignoreip: config này sẽ bỏ qua các giới hạn đăng nhập cho các IP khi IP đó được liệt kê ra trong file này. Thường thì người ta set IP này là IP loopback. Ta có thể set theo dải IP nội bộ hoặc IP chính xác của 1 máy nào đó.
 
-Sau khi config xong, tiến hành gõ service fail2ban restart để chạy service fail2ban và ép service này áp dụng config mới.
+B4: Sau khi config xong, tiến hành gõ service fail2ban restart để chạy service fail2ban và ép service này áp dụng config mới.
+--Trên Ubuntu server:
+Tiến hành chỉnh sửa file /etc/fail2ban/jail.conf sao cho phù hợp, sau đó dùng lệnh copy và đổi tên file mới sao thành jail.local
+Rồi làm như B4 của CentOS.
 
 LƯU Ý QUAN TRỌNG: Nếu fail2ban không thể start/restart, chạy lệnh sau để kiểm tra lỗi:
 	/usr/bin/fail2ban-client -v -v start 
@@ -460,6 +464,8 @@ Sau đó, khi hoàn thành config, tiến hành add lệnh: sudo service fail2ba
 	fail2ban-client status sshd : theo dõi trạng thái, số người bị ban và IP bị ban
 	fail2ban-client set sshd banip X (X là IP cụ thể) : cấm 1 IP cụ thể không thể login được.
 	fail2ban-client set sshd unbanip X (X là IP cụ thể) : gỡ ban/gỡ cấm cho 1 IP cụ thể trước đó đã đăng nhập sai nhiều lần.
+
+
 
 
 b, Tắt đăng nhập root trên ssh
