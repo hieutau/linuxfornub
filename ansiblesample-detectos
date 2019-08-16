@@ -7,7 +7,7 @@
   - name: Install apache
     apt: 
       name: apache2
-      state: latest
+      state: present
     when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
   - name: restart apache
