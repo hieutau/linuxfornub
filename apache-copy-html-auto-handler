@@ -1,0 +1,31 @@
+---
+- hosts: ubuntuclient
+  become: yes
+
+  tasks:
+  - name: Install apache
+    apt:
+      name: apache2
+      state: present
+
+  - name: Restart apache2
+    service:
+      name: apache2
+      state: started
+      enabled: yes
+
+  - name: Backup old apache index.html
+    command: cp /var/www/html/index.html /var/www/html/index.html.bak warn=no
+
+  - name: Copy index.html to client
+    copy:
+      src: /etc/ansible/index.html
+      dest: /var/www/html/
+      force: yes
+      
+  handlers:
+  - name: restart apache2
+    service:
+       name: apache2
+       state: restarted
+
