@@ -1,0 +1,12 @@
+yum install epel-release -y
+yum install --enablerepo="epel" ufw -y
+
+
+Tiến hành sudo nano /etc/yum.repos.d/nginx.repo với code sau:
+##################
+[nginx]
+name=nginx repo
+baseurl=http://nginx.org/packages/centos/$releasever/$basearch/
+gpgcheck=0
+enabled=1
+#################
