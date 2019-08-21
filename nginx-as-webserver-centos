@@ -8,6 +8,7 @@ gpgcheck=0
 enabled=1
 #################
 
+Đăng nhập su, lần lượt gõ các lệnh sau (sử dụng trên PuTTy/MobaXterm):
 yum update -y
 yum install epel-release -y
 yum install --enablerepo="epel" ufw -y
