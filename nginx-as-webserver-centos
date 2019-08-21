@@ -17,12 +17,15 @@ yum groupinstall "Development Tools"  -y
 yum install zlib-devel pcre-devel openssl-devel -y
 yum install -y perl perl-devel perl-ExtUtils-Embed libxslt libxslt-devel
 yum install -y  libxml2 libxml2-devel gd gd-devel GeoIP GeoIP-devel
-yum install -y php-common php-bcmath php-cli php-devel php-mcrypt php-mysql php-pear 
-yum install -y php-password-compat php-pclzip php-pdo php-gd php-imap php-ldap php-odbc 
-yum install -y php-dba php-embedded php-enchant php-mbstring php-intl php-xml php-xmlrpc 
-yum install -y libssh2 php-pecl-ssh2 php-pecl-memcached php-pecl-memcache php-fpm
+
 
 Sau khi cài đặt xong, backup file nginx gốc:
 cd /etc/nginx/
 cp nginx.conf nginx.conf.bak
+
+Cài đặt tiếp:
+yum install -y php-common php-bcmath php-cli php-devel php-mcrypt php-mysql php-pear 
+yum install -y php-password-compat php-pclzip php-pdo php-gd php-imap php-ldap php-odbc 
+yum install -y php-dba php-embedded php-enchant php-mbstring php-intl php-xml php-xmlrpc 
+yum install -y libssh2 php-pecl-ssh2 php-pecl-memcached php-pecl-memcache php-fpm
 
