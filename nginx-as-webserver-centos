@@ -21,6 +21,9 @@ yum install -y  libxml2 libxml2-devel gd gd-devel GeoIP GeoIP-devel
 
 Sau khi cài đặt xong, backup file nginx gốc:
 cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
+systemctl enable nginx
+systemctl start nginx
+
 
 Cài đặt tiếp:
 yum install -y php-common php-bcmath php-cli php-devel php-mcrypt php-mysql php-pear 
