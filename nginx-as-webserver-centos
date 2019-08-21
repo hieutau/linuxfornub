@@ -17,3 +17,7 @@ yum groupinstall "Development Tools"  -y
 yum install zlib-devel pcre-devel openssl-devel -y
 yum install perl perl-devel perl-ExtUtils-Embed libxslt libxslt-devel libxml2 libxml2-devel gd gd-devel GeoIP GeoIP-devel -y
 
+
+Sau khi cài đặt xong, backup file nginx gốc:
+cd /etc/nginx
+cp nginx.conf nginx.conf.bak
