@@ -13,6 +13,7 @@ yum update -y
 yum install epel-release -y
 yum install --enablerepo="epel" ufw -y
 yum install nginx -y
+yum install bind-utils -y
 yum groupinstall "Development Tools"  -y
 yum install zlib-devel pcre-devel openssl-devel -y
 yum install -y perl perl-devel perl-ExtUtils-Embed libxslt libxslt-devel
