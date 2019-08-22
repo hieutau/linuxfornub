@@ -17,7 +17,7 @@ yum groupinstall "Development Tools"  -y
 yum install zlib-devel pcre-devel openssl-devel -y
 yum install -y perl perl-devel perl-ExtUtils-Embed libxslt libxslt-devel
 yum install -y  libxml2 libxml2-devel gd gd-devel GeoIP GeoIP-devel
-service ufw start
+systemctl start ufw
 
 
 Sau khi cài đặt xong, backup file nginx gốc:
