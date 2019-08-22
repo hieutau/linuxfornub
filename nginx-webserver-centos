@@ -1,4 +1,10 @@
 
+
+
+
+
+
+
 Tiến hành sudo nano /etc/yum.repos.d/nginx.repo với code sau:
 ##################
 [nginx]
