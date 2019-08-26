@@ -1,0 +1,50 @@
+Sử dụng Fail2ban
+Fail2ban là công cụ giúp chặn các phiên cố gắng truy cập sai quá số lần quy định. Fail2ban được dùng để tránh/hạn chế tấn công từ bên ngoài (đa số là bruteforce) bằng cách cấm/ban IP trong 1 khoảng thời  gian nhất định khi IP đó cố gắng đăng nhập sai quá số lần cho phép trong config đã được set của fail2ban.
+Cài đặt: Trước tiên cần đăng nhập vào su, kiểm tra và cài đặt gói epel trên CentOS trước, sau đó mới cài fail2ban:
+	yum install epel-release
+	yum install fail2ban*
+Sau đó tiến hành config: 
+----Trên CentOS:
+B1: Tạo file /etc/fail2ban/jail.local , thêm với nội dung sau:
+###############################################################
+[sshd]
+enabled = true 
+filter = sshd 
+action = iptables[name=SSH, port=ssh, protocol=tcp]
+logpath = /var/log/secure
+maxretry = 3 
+bantime = 3600
+##################################################################
+Trong đó:
+	enabled = true:  kích hoạt tính năng này
+	filter = sshd : lọc kết nối SSH, nếu để mặc định là sshd thì fail2ban sẽ tự động trỏ tới file cấu hình /etc/fail2ban/filter.d/sshd.conf.
+	action = iptables[name=SSH, port=ssh, protocol=tcp] : là sử dụng hành động ban thông qua file iptables trong /etc/fail2ban/action.d/iptables.conf
+	logpath = /var/log/secure : các tiến trình ban IP/login sẽ ghi lại log file trong /var/log/secure
+	maxretry = 3 : giới hạn số lần thử đăng nhập lại. quá số lần này sẽ bị ban IP 
+	bantime = 3600 : là thời lượng bị ban, tính bằng giây(sec).
+    Tùy vào nhu cầu của người quản trị, có thể thay các giá trị bantime/maxretry/….
+B2. Lưu lại các config này thành 1 file mới
+B3: Sau đó chuyển qua sửa file /etc/fail2ban/jail.conf . Thay các giá trị bantime và maxretry sao cho giống với config lúc ở trên đã sửa. Chú ý thêm các giá trị sau:
+	findtime: đây là config giới hạn thời gian IP đó phải đăng nhập đúng
+	ignoreip: config này sẽ bỏ qua các giới hạn đăng nhập cho các IP khi IP đó được liệt kê ra trong file này. Thường thì người ta set IP này là IP loopback. Ta có thể set theo dải IP nội bộ hoặc IP chính xác của 1 máy nào đó.
+
+B4: Sau khi config xong, tiến hành gõ service fail2ban restart để chạy service fail2ban và ép service này áp dụng config mới.
+-------------
+----------
+--Trên Ubuntu server:
+Tiến hành chỉnh sửa file /etc/fail2ban/jail.conf sao cho phù hợp, sau đó dùng lệnh copy và đổi tên file mới sao thành jail.local
+Rồi làm như B4 của CentOS.
+
+LƯU Ý QUAN TRỌNG: Nếu fail2ban không thể start/restart, chạy lệnh sau để kiểm tra lỗi:
+	/usr/bin/fail2ban-client -v -v start 
+Sau đó, khi hoàn thành config, tiến hành add lệnh: sudo service fail2ban restart vào trong /etc/rc.d/rc.local để mỗi lần khởi động lại/khởi động lên thì hệ thống sẽ tự động load fail2ban.
+
+
+Để quản lý fail2ban:
+	fail2ban-client status sshd : theo dõi trạng thái, số người bị ban và IP bị ban
+	fail2ban-client set sshd banip X (X là IP cụ thể) : cấm 1 IP cụ thể không thể login được.
+	fail2ban-client set sshd unbanip X (X là IP cụ thể) : gỡ ban/gỡ cấm cho 1 IP cụ thể trước đó đã đăng nhập sai nhiều lần.
+
+
+
+######################################################################################################
