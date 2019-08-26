@@ -32,7 +32,7 @@ tar -Jcf tailieu.tar.xz tailieu (dùng cho tar.xz)
 Giải nén: 
 
 tar -xf tailieu* (chỉ cần dùng parameter gốc để giải nén ra, có thể sử dụng cho tất cả các file nén ở trên)
-
+ 
 
 Nếu muốn nén trực tiếp thư mục ngay tại thư mục đó, ta cd thẳng tới thư mục đó rồi gõ lệnh tar. Có thể thêm parameter v vào cùng với các parameter kia để hiển thị progress và list file được nén/giải nén. ví dụ xvzf, xvJf,…
 
