@@ -4,3 +4,4 @@ B2: Mở file /etc/ssh/sshd_config
 B3: Sửa key PermitRootLogin yes -> no (nếu có dấu # ở đầu thì xóa dấu # để config nhận lệnh)
 B4: Add 1 key AllowUsers A (thay A bằng tên user thường login lên hệ thống - bước này quan trọng)
 Save lại, thoát ra và gõ service sshd restart
+ 
