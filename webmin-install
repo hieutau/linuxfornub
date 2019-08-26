@@ -1,0 +1,55 @@
+#Đăng nhập vào su(CentOS):
+nano /etc/yum.repos.d/webmin.repo 
+
+#Copy đoạn mã này và lưu lại:
+##################
+[Webmin] 
+name=Webmin Distribution Neutral 
+#baseurl=http://download.webmin.com/download/yum 
+mirrorlist=http://download.webmin.com/download/yum/mirrorlist 
+enabled=1
+###################
+
+#Sau đo import key của webmin:
+rpm --import http://www.webmin.com/jcameron-key.asc 
+
+#Tiến hành cài đặt webmin và ufw (ở đây sử dụng ufw để tiện mở port 10000 sau này):
+yum -y install webmin ufw 
+
+#Khởi chạy dịch vụ:
+service webmin start  
+service ufw start 
+chkconfig webmin on
+ufw allow 10000
+service ufw restart
+service sshd restart
+
+#sửa file /etc/webmin/miniserv.conf để tránh bị lỗi xác thực ssl:
+Tìm dòng ssl=1, sửa thành ssl=0 và tiến hành lưu lại
+
+#Restart webmin
+service webmin restart
+
+Tiến hành đăng nhập với tài khoản root trước. sau đó tạo các tài khoản con 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
