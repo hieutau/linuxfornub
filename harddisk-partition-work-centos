@@ -1,0 +1,70 @@
+--------------------------------------------------------------------------------------------------------
+*Câu lệnh cơ bản về phân vùng/làm việc với HDD:
+Các cấu trúc đĩa/phân vùng trong tất cả các Linux distro, mà cụ thể ở đây là CentOS gồm có:
+	-Các loại hệ đĩa: hd* (Hard disk drive IDE), sd* (SCSI Disk drive), cd*(CD ROM),…
+	-Các loại phân vùng: primary, extended và logical
+	-Các chuẩn ổ đĩa: MBR (Master Boot Record), GPT (GUID Partition Table)
+	-File system: ext2, ext3, ext4, swap, xfs, vfat, FAT16, FAT32, NTFS,…
+-Để tạo phân vùng trên đĩa SCSI (ví dụ về một phân vùng ext4) sử dụng parted:
+	(sudo) parted -l
+	(sudo) parted /dev/sdX (X được ký hiêụ từ B trở đi)
+	mklabel X (X là bsd, loop (raw disk access), gpt, mac, msdos, pc98, sun. thường là msdos với ổ lưu trữ sau cùng và GPT với hệ điều hành)
+	mkpart primary X [Phần đầu đĩa] [Phần cuối đĩa] (X là ext2, ext3, ext4, fat16, fat32, hfs, hfsx, hfs+, linux-swap, NTFS, reiserfs, ufs, btrfs. Ví dụ mkpart primary ext4 0 1000MB . => Lệnh sẽ tạo phân vùng 1000MB từ đầu ổ tới khi đủ 1000MB - Dung lượng chính xác nên điền MB)
+	print
+	quit
+	(sudo) mkfs.X /dev/sdb1
+	(sudo) mkdir -p B (thường là /mnt/sdb1 hoặc thư mục nào đó, ví dụ /dulieu phục vụ công việc hoặc database)
+	(sudo) mount -t auto /dev/sdb1 B (sử dụng B ở trên)
+Cuối cùng hiển thị xem partition đã được mount hay chưa bằng lệnh (sudo) df -hT
+
+LƯU Ý: ĐỂ TẨY Ổ (về trạng thái Unallocated): shred -n 5 -vz /dev/*dX (* là s - SCSI hoặc h - IDE Drive, X là ổ cứng a,b,c,d,e,…)
+
+Sau đó, cần phải add thông số của partition này vào trong /etc/fstab. Tiến hành sửa file này:
+B1. Lấy UUID của các phân vùng cần mount: đăng nhập su rồi gõ lệnh blkid. Sử dụng SSH connect bằng 3rd software để tiến hành copy ra.
+B2. File /etc/fstab sẽ có cấu trúc như sau:
+####################################################################
+# /etc/fstab
+# Created by anaconda on Mon Jul 15 14:47:01 2019
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+/dev/mapper/centos-root /                       xfs     defaults        0 0
+UUID=e45b7599-b5ad-4ed8-be22-4594d9c476b4 /boot          xfs     defaults        0 0
+/dev/mapper/centos-swap swap                    swap    defaults        0 0
+#####################################################################
+	B3: Tiến hành thêm các dòng dưới, và thêm thuộc tính của phân vùng: Giả sử có 2 phân vùng sau:
+/dev/sdb1 : UUID=xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx      cần mount cho /dulieu
+/dev/sdb2 : UUID=yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyy     cần mount cho /logcuadulieu
+
+Cấu trúc từng dòng trong file /etc/fstab sau khi add sẽ có dạng:
+UUID=xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx [mountpoint] [filesystem] [option] [BO] [fsck]
+
+Trong đó:
+	-UUID: là định danh của part/dev cần mount. UUID được hiển thị bằng lệnh blkid
+	-[mountpoint]: là thư mục đích cần mount. ví dụ /dulieu hoặc /logcuadulieu,…
+	-[filesystem]: là filesystem của part/disk đó. thường sẽ chọn theo filesystem định dạng lúc đầu của part/dev khi format.
+	-[option]: là thuộc tính mount. thường thường nếu để lưu dữ liệu bt thì sẽ để defaults
+	-[BO]: là Backup option. set 0 (defaults) để bỏ qua tính năng và 1 để sử dụng tính năng dump backup program để backup (trong 1 vài case đặc biệt).
+	-[fsck]: tính năng file system checker, giúp check part/dev có gặp lỗi gì trong khi khởi động không. 0 là tắt, 1 là check ưu tiên các thư mục root và 2 là check tất cả.
+Như vậy, ta sẽ có dòng mount /dev/sdb1 cho thư mục /dulieu dưới dạng ext3 (như đã set khi tạo part):
+UUID=xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx /dulieu   ext3   defaults   0 0
+Tiến hành làm tương tự với phân vùng còn lại. Sau khi save thành công, tiến hành gõ lệnh mount -a để kiểm tra. Nếu báo lỗi thì kiểm tra lại phân vùng xem có gõ thiếu lệnh hoặc set thông số sai hay không.
+Mục đích của việc mount = UUID giúp trỏ chính xác tới part/dev, gỡ ra lắp part/dev khác không bị lỗi mount nhầm, tránh tình trạng gỡ thiết bị ra/vào thì hệ thống có thể sẽ mount sai. khi có nhu cầu mount part/dev khác thì làm tương tự.
+-----------------------------------------------------------------------------------------------------
+Hướng dẫn tạo phân vùng NTFS trên CentOS (unallocated space)
+Giả sử có 1 đĩa mới sdc mới mua về cắm, dung lượng 120GB, ta cần tạo 1 phân vùng NTFS được mount vào /dulieuqualai để access qua lại giữa Windows Platform (vd Client Win7 kế toán) và Linux Platform (CentOS Server)
+B1. đăng nhập Su, gõ yum install -y ntfsprogs
+
+B2: 	parted /dev/sdc
+	mklabel msdos
+	mkpart primary NTFS 0MB 122880MB (hoặc 0% 100%)
+	print (tới bước này nó sẽ tạo 2 part, 1 là reserved và 1 là part chính. lưu ý part chính thường là 1. để ý bước này)
+	quit
+	mkntfs /dev/sdc1
+	(sudo) mkdir -p B (thường là /mnt/sdb1 hoặc thư mục nào đó, ví dụ /dulieu phục vụ công việc hoặc database)
+	(sudo) mount -t auto /dev/sdc1 B (sử dụng B là thư mục cần mount và đã tạo ở trên, ví dụ /dulieu)
+Cuối cùng hiển thị xem partition đã được mount hay chưa bằng lệnh (sudo) df -hT
+Lưu ý: Khi muốn mount ổ đĩa này sang 1 thư mục khác, cần đăng nhập vào su, sử dụng lệnh umount cho part đó và tiến hành mount lại tại 1 thư mục khác.
+
+--------------------------------------------------------------------------------------------------------
