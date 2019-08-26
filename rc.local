@@ -1,0 +1,15 @@
+--------------------------------------------------------------------------------------------------------
+*rc.local , edit rc.local
+Là file cho phép khởi động/thực thi các câu lệnh khi hệ thống bắt đầu startup/khởi động lên sau quá trình khởi động/khởi động lại.
+Trước tiên, để sửa file này thì ta cần đăng nhập su permission. Trong trường hợp chạy câu lệnh này dưới quyền user dưới cấp su, nên cấp quyền sudo cho user trước.
+Tiến hành vào su thiết lập quyền thực thi: chmod ugo+rwx /etc/rc.d/rc.local
+Tiến hành edit file /etc/rc.d/rc.local bằng vi và save lại, ví dụ ta thêm lệnh
+	cat /etc/rc.d/rc.local
+Sau đó, enable dịch vụ và bật dịch vụ rc-local: 
+	systemctl enable rc-local
+	systemctl start rc-local
+Tiến hành kiểm tra dịch vụ rc-local:
+	systemctl status rc-local.service
+Kiểm tra nếu thấy phần active của dịch vụ ghi là Active: active (exited) thì dịch vụ rc.local đã kích hoạt
+--------------------------------------------------------------------------------------------------------
+
