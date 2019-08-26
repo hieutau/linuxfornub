@@ -1,0 +1,27 @@
+
+--------------------------------------------------------------------------------------------------------
+*Đồng bộ thời gian CentOS với Internet bằng ntpdate
++Tại dấu nhắc, ta gõ sudo yum install ntp ntpdate nếu user đã add su permission hoặc yum install ntp ntpdate nếu login vào su. Để nhanh nhất, nên login vào su.
++Tiếp tục gõ các lệnh sau:			
+		(sudo) yum install chrony
+		systemctl start ntpdate (Khởi chạy ntpd)
+		systemctl enable ntpdate (Kích hoạt ntpd)
+		systemctl status ntpdate (Trạng thái của ntpd, nếu nó đã Active thì sẽ tiến hành làm bước tiếp theo, còn không thì phải kiểm tra lại)
+	+Tiếp tục add server để CentOS có thể lấy thời gian từ các server đó:
+		ntpdate -u -s 1.asia.pool.ntp.org 0.asia.pool.ntp.org
+		ntpdate -q 1.asia.pool.ntp.org 0.asia.pool.ntp.org
+	+Sau khi hoàn thành, tiến hành khởi động lại service ntpd:
+		systemctl restart ntpdate
+	Bật trạng thái đồng bộ và kiểm tra trạng thái đồng bộ của NTP Synchronized:
+		timedatectl set-ntp on
+		timedatectl
+Lưu ý: Nếu NTP Synchronization vẫn ở trạng thái No, thì gõ lần lượt các lệnh sau đây:
+		service ntpd stop
+		ntpd -gq (đợi 1 lát)
+		systemctl start ntpd
+		service ntpd start
+		timedatectl set-ntp on
+		timedatectl
+Sau đó kiểm tra lại trạng thái đồng bộ như trên, nếu vẫn không được thì restart bằng lệnh reboot.
+--------------------------------------------------------------------------------------------------------
+
