@@ -1,0 +1,16 @@
+--------------------------------------------------------------------------------------------------------
+*hosts.allow/hosts.deny
+Hoạt động giống y như một tường lửa, tạo rule chặn/cho phép điều khiển/truy cập hệ thống ở mức ứng dụng. Để sửa thì ta phải có quyền su permission. đăng nhập su và mở file tại dấu nhắc
+vi /etc/hosts.allow
+vi /etc/hosts.deny
+Thứ tự ưu tiên lệnh sẽ là /etc/hosts.allow trước, rồi đến /etc/hosts.deny. 
+Trước tiên, để làm thì cần cài đặt gói TCP Wrappers. Đăng nhập vào su, tại dấu nhắc ta gõ:
+yum -y install tcp_wrappers
+Các parameter mẫu có thể được add trong hosts.allow/hosts.deny:
+vsftpd : 192.168.177.  : cho phép/chặn tất cả client của mạng 192.168.177.0 được phép kết nối FTP 
+sshd : 192.168.177.250 , 192.168.177.251 : cho phép/chặn kết nối SSH trên 2 IP .250 và .251 
+Ngoài ra, ta có thể sử dụng cả lệnh block trên hosts.allow mà không cần tới hosts.deny:
+Ví dụ: 
+ALL EXCEPT vsftpd: 192.168.177. : Mọi client trên mạng 192.168.177.0 sẽ được sử dụng mọi services, nhưng trừ service FTP ra không thể sử dụng được.
+--------------------------------------------------------------------------------------------------------
+
