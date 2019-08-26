@@ -30,7 +30,7 @@ Tìm dòng ssl=1, sửa thành ssl=0 và tiến hành lưu lại
 #Restart webmin
 service webmin restart
 
-Tiến hành đăng nhập với tài khoản root trước. sau đó tạo các tài khoản con 
+Tiến hành đăng nhập với tài khoản root trước. sau đó tạo các tài khoản con  
 
 
 
