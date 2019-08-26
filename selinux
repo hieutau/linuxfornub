@@ -1,0 +1,23 @@
+
+--------------------------------------------------------------------------------------------------------
+* SELinux - firewalld – iptables
+a, SELinux
+SELinux (Security-enhanced Linux) là một tính năng cho phép bảo mật của kernel trong Linux, được tạo ra để bảo vệ server trước các setting lỗi/sai hoặc các daemon bị xâm nhập. SELinux đặt giới hạn cho server giúp server an toàn.
+-Vô hiệu hóa tạm thời (Temporarily disable until system restart):
+Đăng nhập vào su, gõ lần lượt 3 lệnh sau:
+		echo 0 > /etc/selinux/enforce
+		setenforce 0
+		sestatus
+Nếu ở phần Current mode tại status là Permissive => đã vô hiệu hóa tạm thời thành công. Nếu muốn bật lại sau khi không muốn ở chế độ tạm thời nữa thì ta thay số 0 thành số 1 trong hai câu lệnh trên hoặc reboot lại Server.
+
+-Vô hiệu hóa vĩnh viễn SELinux:
+Đăng nhập vào su, sử dụng lệnh edit file vi /etc/selinux/config
+File đó sẽ có nội dung sau:
+
+#######################################################################
+# SELINUX= can take one of these three values:
+# enforcing - SELinux security policy is enforced.
+# permissive - SELinux prints warnings instead of enforcing.
+# disabled - No SELinux policy is loaded.
+SELINUX=enforcing
+######################################################################
