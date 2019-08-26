@@ -31,3 +31,4 @@ Là 1 dịch vụ cung cấp tường lửa được quản lý động với s�
 		(sudo) firewall-cmd –list-all
 -Để enable/cho phép 1 port TCP X (với parameter vĩnh viễn là --permanent) đi qua firewall tại zone A (public/drop/block/external/internal/dmz/work/home/trusted) (X, A tùy vào người quản trị set, và X ngoài port cụ thể ra thì có thể set là 1 dải port. ví dụ --add-port=4000-5000/TCP):
 		(sudo) firewall-cmd --zone=A --permanent --add-port=X/tcp 
+ 
