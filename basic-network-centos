@@ -1,0 +1,58 @@
+--------------------------------------------------------------------------------------------------------
+*Cấu hình Network 
+a, Cài đặt – setting mạng
+  Trước tiên để tiện cho việc kiểm tra IP sau khi setting thì nên cài tool network trước: đăng nhập su, nhập password của root rồi gõ lệnh sau (yêu cầu mạng đang ở DHCP/Automatic):
+      yum install net-tools -y
+Sau đó nhấn y để tải và cài. Sau khi cài đặt xong:
++tại dấu nhắc, gõ nmcli d để kiểm tra xem state của NIC/other NIC
+	+tại dấu nhắc, gõ nmtui
+	+vào Activate a connection, chọn network card/network name rồi đánh dấu active. Khi phần đó hiện dấu sao ở phía đầu network name đó tức là đã bật kết nối. Back để quay lại.
+	+Vào Edit a connection, chọn đúng networkname cần setting rồi nhấn Enter
+	+Tại mục Ethernet, chọn vào NICs cần chọn, khi vào đó sẽ có các mục cần lưu ý:
+		-Profile name
+		-IPv4 Configuration (Automatic – tự động; Manual – tĩnh)
+		-đánh X vào Automatically connect
+Giả dụ Network hiện tại CentOS đang tham gia là 192.168.177.0/22, ta sẽ set cho NIC đang sử dụng là:
+		-IP address: 192.168.177.253/22
+		-Default Gateway: 192.168.177.1
+		-Primary DNS: 8.8.8.8
+Sau khi setting xong, ta gõ service network restart , sau đó nhập password của root vào để tiến hành reset mạng.
+--------------------------------------------------------------------------------------------------------
+b, Kiểm tra/truy xuất thông tin NIC
+
+lệnh show port đang sử dụng: netstat -nltp
+ethtool là một công cụ giúp truy xuất, tìm kiếm thông tin các card NIC và các trình driver NIC đang hiện có trên máy cài đặt Linux (cụ thể ở đây là CentOS)
+Ta có các lệnh sau:
+	nmcli hoặc nmcli d: để kiểm tra state của các card NIC.
+	ifconfig -a : để kiểm tra và hiển thị tất cả các kết nối hiện có(tên kết nối, địa chỉ IP, mask, MAC address,…)
+	ethtool (*) tên_port (ví dụ ethtool eth1 – với eth1 là NIC hiện tại của máy cài đặt CentOS): hiển thị các thông số cài đặt, các tham số mà NIC đó hỗ trợ, và là các tham số hoạt động của NIC đó). ngoài ra phần (*) có thể để trống hoặc còn có thêm các parameter nhỏ như -i (hiển thị driver giao tiếp),  --statistics (hiển thị lưu lượng nhận/gửi của NIC),…
+--------------------------------------------------------------------------------------------------------
+c, Add/delete virutal IP address vào interface NIC có sẵn
+-----Bí danh mạng (Network alias-es)
+Bí danh mạng (network alias) là 1 loại IP ảo, dựa trên NIC và IP gốc được cấp của NIC. có nhiệm vụ cùng IP gốc tải lên-xuống từ Net  NIC đó. Giả sử có 1 card NIC đang cắm là ens33 với địa chỉ IP hiện tại là 192.168.177.250/24. ta muốn tạo thêm 1 bí danh cho nó với địa chỉ là 192.168.177.251/24 cũng trên card NIC đó. Lệnh để cài đặt:
+
+ifconfig ens33:x 192.168.177.251 up (với x là số từ 0-n bắt đầu từ 0) 
+ifconfig -a (kiểm tra)
+ifconfig ens33:x down (gỡ bỏ)
+
+-----Giao thức mạng ảo (Virtual network interface)
+Cũng tương tự giống như bí danh mạng. Ví dụ cho y như trường hợp trên, ta cũng có thể sử dụng lệnh ip addr để add :
+
+ip addr add 192.168.177.251/24 dev ens33 (gán IP ảo 251 này cho ens33)
+ip addr del 192.168.177.251/24 dev ens33 (gỡ IP ảo 251 này khỏi ens33)
+
+Lưu ý. Khi muốn clear sạch sẽ các Virtual IP Address này, ta có thể sử dụng lệnh ip addr flush dev X (ví dụ X là ens33) hoặc service network restart để clear các setting của Virtual IP vì chúng có thuộc tính là IP tạm. chứ không phải IP gốc vì 1 NIC chỉ có 1 IP gốc. muốn set thêm IP permanent cho NIC đó thì ta có thể sửa trong /etc/network/interface. Chi tiết .
+--------------------------------------------------------------------------------------------------------
+d, Bảng định tuyến tĩnh (Static route board)
+Định tuyến mạng giúp ta có thể truy cập vào các network và interface khác với network và interface của máy đang sử dụng.
+Bảng định tuyến giúp ta biết muốn đi đến một mạng nào đó thì cần đi qua đâu, qua IP nào và qua NIC nào. câu lệnh liệt kê là route -n . Ví dụ lệnh để tạo 1 định tuyến có cấu trúc như sau:
+
+ip route add 172.16.1.0/22 via 192.168.177.10 dev ens33
+
+Giải thích:
+ip route add: là lệnh để tạo định tuyến
+172.16.1.0/22 : là mạng đích ta muốn kết nối. Cũng như là network 172.16.1.0 với mask 255.255.252.0 (prefix /22)
+via 192.168.177.10 : Địa chỉ IP ra/vào như là bộ định tuyến thứ cấp mà ta đang thêm một định tuyến. (nên set static)
+ens33: là card NIC sẽ dùng để truy nhập, nhận gửi dữ liệu vào network 172.16.1.0/22 (card NIC này có IP set là 192.168.177.10 và nằm trong mạng 192.168.177.0/24)
+Lưu ý: Setting của Static route cũng là tạm giống như virtual IP, nếu sử dụng lệnh service network restart thì sẽ bị mất các setting tạm thời này.
+--------------------------------------------------------------------------------------------------------
