@@ -1,6 +1,6 @@
 
 --------------------------------------------------------------------------------------------------------
-* SELinux - firewalld – iptables
+* SELinux - firewalld
 a, SELinux
 SELinux (Security-enhanced Linux) là một tính năng cho phép bảo mật của kernel trong Linux, được tạo ra để bảo vệ server trước các setting lỗi/sai hoặc các daemon bị xâm nhập. SELinux đặt giới hạn cho server giúp server an toàn.
 -Vô hiệu hóa tạm thời (Temporarily disable until system restart):
@@ -21,3 +21,13 @@ File đó sẽ có nội dung sau:
 # disabled - No SELinux policy is loaded.
 SELINUX=enforcing
 ######################################################################
+
+
+Thay phần tô đậm enforcing thành disabled, lưu lại và reboot để Server nhận config mới.
+Muốn bật thì đổi ngược lại từ disabled thành enforcing.
+b, firewall-cmd
+Là 1 dịch vụ cung cấp tường lửa được quản lý động với sự hỗ trợ của các vùng mạng hoặc tường lửa, qua đó xác định độ tin cậy của các kết nối mạng hoặc các giao thức mạng. Hỗ trợ IPv4, cầu mạng (bridge network) hoặc dải IP/alias IP được set.
+-Để liệt kê tất cả cấu hình đang được áp dụng của firewall-cmd: 
+		(sudo) firewall-cmd –list-all
+-Để enable/cho phép 1 port TCP X (với parameter vĩnh viễn là --permanent) đi qua firewall tại zone A (public/drop/block/external/internal/dmz/work/home/trusted) (X, A tùy vào người quản trị set, và X ngoài port cụ thể ra thì có thể set là 1 dải port. ví dụ --add-port=4000-5000/TCP):
+		(sudo) firewall-cmd --zone=A --permanent --add-port=X/tcp 
