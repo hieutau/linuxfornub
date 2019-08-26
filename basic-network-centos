@@ -55,4 +55,4 @@ ip route add: là lệnh để tạo định tuyến
 via 192.168.177.10 : Địa chỉ IP ra/vào như là bộ định tuyến thứ cấp mà ta đang thêm một định tuyến. (nên set static)
 ens33: là card NIC sẽ dùng để truy nhập, nhận gửi dữ liệu vào network 172.16.1.0/22 (card NIC này có IP set là 192.168.177.10 và nằm trong mạng 192.168.177.0/24)
 Lưu ý: Setting của Static route cũng là tạm giống như virtual IP, nếu sử dụng lệnh service network restart thì sẽ bị mất các setting tạm thời này.
---------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
