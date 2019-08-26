@@ -32,7 +32,7 @@ B2. File /etc/fstab sẽ có cấu trúc như sau:
 /dev/mapper/centos-root /                       xfs     defaults        0 0
 UUID=e45b7599-b5ad-4ed8-be22-4594d9c476b4 /boot          xfs     defaults        0 0
 /dev/mapper/centos-swap swap                    swap    defaults        0 0
-#####################################################################
+######################################################################
 	B3: Tiến hành thêm các dòng dưới, và thêm thuộc tính của phân vùng: Giả sử có 2 phân vùng sau:
 /dev/sdb1 : UUID=xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx      cần mount cho /dulieu
 /dev/sdb2 : UUID=yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyy     cần mount cho /logcuadulieu
