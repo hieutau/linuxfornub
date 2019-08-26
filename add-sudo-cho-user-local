@@ -1,0 +1,13 @@
+--------------------------------------------------------------------------------------------------------
+*Hướng dẫn add sudo permission cho account hiện thời (khi gõ sudo báo lỗi You need to be root to perform this command):
++tại dấu nhắc, gõ su
+	+gõ root password (khi cài đặt centos sẽ có phần root password)
+	+Xảy ra 2 trường hợp:
+-Khi user hiện là [root@test centtest] thì tiếp tục gõ usermod -aG wheel centtest và lệnh su – centtest (centtest là tên user hiện tại).
+		-Khi muốn 1 user mới (ví dụ user abcd, ta tiến hành gõ lần lượt 3 lệnh):
+# adduser abcd (add 1 user abcd)
+# passwd centostest (mật khẩu của user đó)
+# usermod -aG wheel abcd (add vào group quyền su hiện tại)
+	+để kiểm tra/test xem user centtest đã có quyền chưa, ta gõ sudo yum update (tiến hành update – download các bản vá cho hệ thống centos)
+--------------------------------------------------------------------------------------------------------
+
