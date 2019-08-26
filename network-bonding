@@ -1,0 +1,42 @@
+Network bonding
+NIC Bonding được tạo ra để cấu hình 2/nhiều card mạng chạy song song hỗ trợ lẫn nhau, giúp cân bằng tải và đáp ứng được tính sẵn sàng cao (High Availability) cho Linux Server (tương tự NIC Teaming của Windows Server). Nếu 1 trong các card ở trong cụm bị down thì các dịch vụ vẫn sẽ hoạt động bình thường trên các card mạng khác.
+Yêu cầu: Server có từ >2 Card NIC trở lên.Ví dụ Server chạy CentOS hiện đang có 2 card NIC là ens33 và ens34 và quản trị muốn cài NIC Bonding với card bond0 để đáp ứng cả 2 khả năng Load Balancing và Fault Tolerance. Tiến hành set NIC Bonding:
+Đăng nhập su, tiến hành stop dịch vụ network bằng lệnh (bước này quan trọng, phải set lệnh trước khi tiến hành làm):
+	service network stop
+B1. Tạo bond interface file tại thư mục /etc/sysconfig/network-scripts với tên ifcfg-bond0. Sửa nội dung file đó như sau:
+
+DEVICE=bond0
+TYPE=Bond
+NAME=bond0
+BONDING_MASTER=yes
+BOOTPROTO=none
+ONBOOT=yes
+IPADDR=x.x.x.x
+NETMASK=x.x.x.x
+GATEWAY=x.x.x.x
+DNS1=x.x.x.x (set DNS Primary của Google hoặc Trỏ đến Server nội bộ  nếu là Server nội bộ)
+DNS2=8.8.4.4
+DNS3=1.1.1.1
+DNS4=1.0.0.1
+BONDING_OPTS="mode=5 miimon=100"
+
+
+Lần lượt sửa X là IP và Y là chế độ bonding ở phần bôi đậm sao cho phù hợp với network hiện tại của hệ thống. Tại phần BONDING_OPTS có thể thay theo các mode dưới đây:
+mode = 0: balance-rr (round - robin) (có LB, không FT)
+mode = 1: active - backup (có FT, không LB)
+mode = 2: balance - xor (có FT + LB)
+mode = 3: broadcast (có FT, không LB)
+mode = 4: 802.3ad (có FT + LB)
+mode = 5: balance - tlb  (có FT + LB)
+mode = 6: balance - alb (có FT + LB)
+
+B2. Tiến hành sửa config của ifcfg-ens33 và ifcfg-ens34 cũng trong thư mục với ifcfg-bond0 bằng việc thêm các config này vào và xóa các config cũ (lưu ý giữ lại và để nguyên các config NAME, TYPE, DEVICE, UUID, HWADDR (nếu có) để tránh lỗi):
+
+BOOTPROTO=none
+ONBOOT=yes
+MASTER=bond0
+SLAVE=yes
+
+Sau khi lưu các config này, tiến hành gõ service network restart để khởi động lại dịch vụ mạng. Sau đó gõ ifconfig -a và nmcli d để kiểm tra và test.
+--------------------------------------------------------------------------------------------------------
+
