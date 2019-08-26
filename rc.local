@@ -13,3 +13,4 @@ Tiến hành kiểm tra dịch vụ rc-local:
 Kiểm tra nếu thấy phần active của dịch vụ ghi là Active: active (exited) thì dịch vụ rc.local đã kích hoạt
 --------------------------------------------------------------------------------------------------------
 
+ 
