@@ -1,0 +1,28 @@
+
+
+
+--------------------------------------------------------------------------------------------------------
+*Hướng dẫn update hệ thống CentOS khi CentOS quá cũ:
+	+Tại dấu nhắc, ta gõ (sudo) yum check-update -y # nhập pass
+	+Sau đó, tiến hành gõ (sudo) yum upgrade -y # nhập pass
+	+Các gói khuyến khích nên cài đặt thêm sau khi update hệ thống:
+				(sudo) yum install -y nano
+				(sudo) yum install -y perl
+				(sudo) yum install -y net-tools
+		  		(sudo) yum install -y tcp_wrappers
+				(sudo) yum install -y wget
+				(sudo) yum install -y epel-release
+				(sudo) yum install -y vsftpd
+				(sudo) yum install -y ntfsprogs
+				(sudo) yum install -y p7zip
+				(sudo) yum install -y p7zip-plugins
+				(sudo) yum install -y zip
+				(sudo) yum install -y unzip
+				(sudo) yum install -y ntpdate
+				(sudo) yum install -y bzip2
+				(sudo) yum install -y pax
+				(sudo) yum install -y htop
+
+	+Nếu quá trình thành công, ta gõ sudo yum clean all để dọn sạch các tệp nén đã tải về hệ thống để update, nếu không thành công thì add sudo permission cho account hiện hành đang gõ lệnh hoặc vào thẳng su để update hệ thống hiện tại
+--------------------------------------------------------------------------------------------------------
+
