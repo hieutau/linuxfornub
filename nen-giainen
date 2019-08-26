@@ -1,0 +1,49 @@
+**Nén/giải nén file
+Trước khi vào nén/giải nén, nên cài/update các gói sau để đảm bảo tránh được các lỗi xảy ra:
+(sudo) yum install -y p7zip
+(sudo) yum install -y p7zip-plugins
+(sudo) yum install -y zip
+(sudo) yum install -y unzip
+(sudo) yum install -y bzip2
+(sudo) yum install -y pax
+
+a, tar
+Tar là công cụ giúp nén/giải nén có sẵn trên Linux/CentOS, hỗ trợ các đuôi tar, tar.bz2, tar.gz, tar.xz,..
+Các parameter cơ bản:
+c - create - tạo
+x - eXtract - giải nén 
+v - verbose (thường được dùng kèm với c và f để liệt kê các file được nén vào trong 1 archive)
+f - file - sử dụng nén archive
+u - update - cập nhật các file vào trong file nén archive đã có
+
+j - option của tar.bz2
+z - option của tar.gz
+J - option của xz
+
+Ví dụ có 1 thư mục /tailieu, trong đó chứa 15-20 file document. Ta cần nén lại và gửi cho đi. tiến hành trỏ tới thư mục mẹ chứa thư mục tailieu bằng lệnh cd. Gõ lệnh sau:
+
+Nén:
+
+tar -cf tailieu.tar tailieu (dùng cho tar)
+tar -jcf tailieu.tar.bz2 tailieu (dùng cho tar.bz2)
+tar -zcf tailieu.tar.gz tailieu (dùng cho tar.gz)
+tar -Jcf tailieu.tar.xz tailieu (dùng cho tar.xz)
+
+Giải nén: 
+
+tar -xf tailieu* (chỉ cần dùng parameter gốc để giải nén ra, có thể sử dụng cho tất cả các file nén ở trên)
+
+
+Nếu muốn nén trực tiếp thư mục ngay tại thư mục đó, ta cd thẳng tới thư mục đó rồi gõ lệnh tar. Có thể thêm parameter v vào cùng với các parameter kia để hiển thị progress và list file được nén/giải nén. ví dụ xvzf, xvJf,…
+
+
+b, pax
+	pax cũng là một công cụ nén/giải nén giống như tar, nhưng chỉ support tar/gz. Tương tự, cài các package như trên.
+Giả dụ, có 1 thư mục A chứa các tệp tin âm nhạc, ảnh,… ta sẽ sử dụng pax để nén lại/giải nén:
+(LƯU Ý: không được ghi dấu “/” khi nén thư mục hiện tại, để tránh lỗi, thay vì ghi /A thì sẽ ghi A):
+Trước tiên, ta tiến hành cd tới thư mục mẹ của thư mục cần nén:
+	Để nén gzip: pax -zwf abcdef.tar.gz A
+	Để nén tar: pax -wf abcdef.tar A
+	
+Để giải nén ngay tại thư mục mẹ:
+	pax -zrf abcdef.tar.gz (hoặc file tar/gz bất kỳ, nếu đó là file tar thì bỏ z ra khỏi parameter zrf)
