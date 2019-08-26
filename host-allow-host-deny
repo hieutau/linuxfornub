@@ -14,3 +14,4 @@ Ví dụ:
 ALL EXCEPT vsftpd: 192.168.177. : Mọi client trên mạng 192.168.177.0 sẽ được sử dụng mọi services, nhưng trừ service FTP ra không thể sử dụng được.
 --------------------------------------------------------------------------------------------------------
 
+ 
