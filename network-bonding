@@ -29,7 +29,7 @@ mode = 3: broadcast (có FT, không LB)
 mode = 4: 802.3ad (có FT + LB)
 mode = 5: balance - tlb  (có FT + LB)
 mode = 6: balance - alb (có FT + LB)
-
+  
 B2. Tiến hành sửa config của ifcfg-ens33 và ifcfg-ens34 cũng trong thư mục với ifcfg-bond0 bằng việc thêm các config này vào và xóa các config cũ (lưu ý giữ lại và để nguyên các config NAME, TYPE, DEVICE, UUID, HWADDR (nếu có) để tránh lỗi):
 
 BOOTPROTO=none
